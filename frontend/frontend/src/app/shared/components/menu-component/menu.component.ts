@@ -58,6 +58,11 @@ export class MenuComponent {
           ],
         },
         {
+          label: 'Preparación de pedidos',
+          route: '/pedidos/preparacion',
+          roles: [ROLES.ALMACEN],
+        },
+        {
           label: 'Nuevo pedido',
           route: '/pedidos/nuevo',
           roles: [ROLES.COMERCIAL],

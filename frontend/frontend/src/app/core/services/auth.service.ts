@@ -21,20 +21,13 @@ export class AuthService {
   constructor(private sessionService: SessionService) {}
 
   login(credentials: Credentials): Observable<User | null> {
-    // Aquí debe integrarse la llamada al endpoint real '/auth/login'.
-    // Por ahora simula respuesta (mock) para desarrollo sin backend.
-    // Sustituir "dummy" por integración real cuando el backend esté disponible.
-    const dummyUsers = [
-      { id: 1, username: 'direccion', role: ROLES.DIRECCION },
-      { id: 2, username: 'comercial', role: ROLES.COMERCIAL },
-      { id: 3, username: 'almacen', role: ROLES.ALMACEN },
-      { id: 4, username: 'reparto', role: ROLES.REPARTO },
-      { id: 5, username: 'admin', role: ROLES.ADMINISTRACION },
-    ];
-    const found = dummyUsers.find(
-      u => u.username === credentials.username && credentials.password === '1234'
-    );
-    return of(found || null);
+    // Login siempre devuelve el usuario ALMACÉN para pruebas:
+    const almacenUser: User = {
+      id: 3,
+      username: 'almacen',
+      role: ROLES.ALMACEN
+    };
+    return of(almacenUser);
   }
 
   logout(): void {

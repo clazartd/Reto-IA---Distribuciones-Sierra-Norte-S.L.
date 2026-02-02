@@ -1,0 +1,73 @@
+<div class="bg-white rounded shadow p-4">
+  <h2 class="mb-4">Preparación de pedidos</h2>
+
+  <form class="row g-3 mb-3" (ngSubmit)="filtrar()">
+    <div class="col-md-4">
+      <label class="form-label">Cliente</label>
+      <select class="form-select" [(ngModel)]="filtroCliente" name="cliente" (change)="filtrar()">
+        <option value="">Todos</option>
+        @for (cliente of clientesUnicos; track cliente) {
+          <option [ngValue]="cliente">{{ cliente }}</option>
+        }
+      </select>
+    </div>
+    <div class="col-md-4">
+      <label class="form-label">Fecha prevista</label>
+      <input type="date" class="form-control" [(ngModel)]="filtroFechaPrevista" name="fechaPrevista" (change)="filtrar()" />
+    </div>
+    <div class="col-md-4 d-flex align-items-end">
+      <button type="button" class="btn btn-outline-secondary me-2" (click)="limpiarFiltros()">
+        Limpiar filtros
+      </button>
+    </div>
+  </form>
+
+  @if (loading) {
+    <div class="alert alert-info mb-2">Cargando pedidos...</div>
+  }
+  @if (error) {
+    <div class="alert alert-danger mb-2">{{ error }}</div>
+  }
+  @if (successMsg) {
+    <div class="alert alert-success mb-2">{{ successMsg }}</div>
+  }
+  @if (!loading && filteredPedidos.length === 0) {
+    <div class="alert alert-warning">No hay pedidos pendientes de preparación.</div>
+  }
+  @if (!loading && filteredPedidos.length > 0) {
+    <div class="table-responsive">
+      <table class="table table-striped align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>ID</th>
+            <th>Cliente</th>
+            <th>Fecha prevista</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (pedido of filteredPedidos; track pedido.id) {
+            <tr>
+              <td>{{ pedido.id }}</td>
+              <td>{{ pedido.cliente }}</td>
+              <td>{{ pedido.fechaPrevistaEntrega }}</td>
+              <td>
+                <button class="btn btn-success btn-sm" (click)="abrirConfirmacionPreparar(pedido)">
+                  Marcar como preparado
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  <app-confirm-modal
+    [show]="showConfirm"
+    [title]="'Confirmar preparación'"
+    [message]="pedidoSeleccionado ? '¿Confirmas que el pedido #' + pedidoSeleccionado.id + ' ya está preparado?' : ''"
+    (confirmed)="confirmarPreparacion()"
+    (cancelled)="cancelarPreparacion()"
+  ></app-confirm-modal>
+</div>

@@ -66,7 +66,7 @@
 
     @if (esAlmacen) {
       <div class="dashboard-block mb-3">
-        <a class="btn btn-primary" [routerLink]="['/pedidos/listado']">Preparar pedidos</a>
+        <a class="btn btn-primary" [routerLink]="['/pedidos/preparacion']">Preparar pedidos</a>
         @if (resumen.registrados > 0) {
           <div class="alert alert-danger mt-3">
             Hay {{ resumen.registrados }} pedidos registrados pendientes de preparación.

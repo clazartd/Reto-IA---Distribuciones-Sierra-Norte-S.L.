@@ -1,0 +1,13 @@
+@if (show) {
+  <div class="custom-modal-backdrop" (click)="onBackgroundClick()">
+    <div class="custom-modal" (click)="$event.stopPropagation()">
+      <button class="custom-modal-close" type="button" (click)="onClose()">&times;</button>
+      <h5 class="mb-3">{{ title }}</h5>
+      <div class="mb-4">{{ message }}</div>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-secondary me-2" (click)="onClose()">Cancelar</button>
+        <button class="btn btn-primary" (click)="onConfirm()">Confirmar</button>
+      </div>
+    </div>
+  </div>
+}

@@ -32,6 +32,13 @@ const routes: Routes = [
     data: { roles: [ROLES.COMERCIAL] },
     component: NuevoPedidoComponent,
   },
+  {
+    path: 'preparacion',
+    canActivate: [AuthGuard, RoleGuard],
+    data: { roles: [ROLES.ALMACEN] },
+    loadComponent: () =>
+      import('./pages/preparacion-pedidos/preparacion-pedidos.component').then(m => m.PreparacionPedidosComponent)
+  },
 ];
 
 @NgModule({

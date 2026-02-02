@@ -87,6 +87,10 @@ export class PedidosService {
     return this.http.put(`${this.API_URL}/${id}/cancelar`, { motivo });
   }
 
+  prepararPedido(id: number): Observable<any> {
+    return this.http.put(`${this.API_URL}/${id}/preparar`, {});
+  }
+
   // Mock para dashboard
   getPedidosResumen(): Observable<PedidosResumen> {
     // TODO: reemplazar esta lógica por una integración real en producción
