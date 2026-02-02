@@ -1,0 +1,18 @@
+@if (isLogged) {
+<nav class="navbar navbar-expand navbar-light bg-light mb-4 shadow-sm rounded">
+  <div class="container">
+    <span class="navbar-brand">Aplicación</span>
+    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+      @for (item of visibleItems; track item.route) {
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="item.route" routerLinkActive="active">{{ item.label }}</a>
+        </li>
+      }
+    </ul>
+    <span class="navbar-text text-body-secondary me-3">
+      Rol: <strong>{{ role }}</strong>
+    </span>
+    <button class="btn btn-outline-danger btn-sm" (click)="logout()">Salir</button>
+  </div>
+</nav>
+}
