@@ -79,12 +79,12 @@ export class PedidosService {
     ]);
   }
 
-  updatePedido(pedido: Pedido): Observable<any> {
-    return this.http.put(`${this.API_URL}/${pedido.id}`, pedido);
+  updatePedido(id: number, pedido: Pedido): Observable<any> {
+    return this.http.put(`${this.API_URL}/${id}`, pedido);
   }
 
-  cancelPedido(id: number | string): Observable<any> {
-    return this.http.patch(`${this.API_URL}/${id}`, { estado: 'cancelado' });
+  cancelPedido(id: number, motivo: string): Observable<any> {
+    return this.http.put(`${this.API_URL}/${id}/cancelar`, { motivo });
   }
 
   // Mock para dashboard

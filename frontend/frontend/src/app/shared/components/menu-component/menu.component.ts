@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { SessionService } from '../../core/services/session.service';
-import { ROLES } from '../../core/constants/roles.constants';
+import { ROLES } from '../../../core/constants/roles.constants';
+import { SessionService } from '../../../core/services/session.service';
 
 interface MenuItem {
   label: string;

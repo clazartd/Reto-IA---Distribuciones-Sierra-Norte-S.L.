@@ -1,0 +1,25 @@
+@if (show) {
+  <div class="custom-modal-backdrop" (click)="onBackgroundClick()">
+    <div class="custom-modal" (click)="$event.stopPropagation()">
+      <button class="custom-modal-close" type="button" (click)="onClose()">&times;</button>
+      <h5 class="mb-3">Cancelar pedido</h5>
+      <div class="mb-4">
+        ¿Deseas cancelar este pedido? <b>Esta acción no se puede deshacer.</b><br>
+        @if (pedido) {
+          <b>Pedido:</b> #{{ pedido?.id }} de {{ pedido?.cliente }}
+        }
+      </div>
+      <div class="mb-3">
+        <label for="motivoCancelacion" class="form-label">Motivo de cancelación <span class="text-danger">*</span></label>
+        <textarea id="motivoCancelacion" class="form-control" [(ngModel)]="motivo" name="motivoCancelacion" rows="2" required maxlength="200" placeholder="Indica el motivo..." autofocus></textarea>
+        @if (!motivo.trim()) {
+          <div class="text-danger mt-1 text-sm">El motivo es obligatorio.</div>
+        }
+      </div>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-outline-secondary me-2" (click)="onClose()">No, volver</button>
+        <button class="btn btn-danger" (click)="onConfirm()" [disabled]="!motivo.trim()">Sí, cancelar</button>
+      </div>
+    </div>
+  </div>
+}

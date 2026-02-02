@@ -5,10 +5,16 @@
       <div class="p-4 rounded bg-white">
         <h2 class="mb-4 text-center">Editar pedido</h2>
 
+        @if (!editable) {
+          <div class="alert alert-warning text-center mb-3">
+            Este pedido ya no puede modificarse porque está en proceso
+          </div>
+        }
+
         <form [formGroup]="editForm" (ngSubmit)="submit()">
           <div class="mb-3">
             <label for="cliente" class="form-label">Cliente</label>
-            <input id="cliente" type="text" class="form-control" formControlName="cliente" [class.is-invalid]="editForm.get('cliente')?.invalid && editForm.get('cliente')?.touched">
+            <input id="cliente" type="text" class="form-control" formControlName="cliente" [class.is-invalid]="editForm.get('cliente')?.invalid && editForm.get('cliente')?.touched" [disabled]="!editable">
             @if (editForm.get('cliente')?.invalid && editForm.get('cliente')?.touched) {
               <div class="invalid-feedback">
                 Este campo es obligatorio
@@ -20,7 +26,7 @@
             <label class="form-label">Productos</label>
             <div *ngFor="let grupo of productos.controls; let i = index" [formGroupName]="i" class="row align-items-end g-2 mb-2">
               <div class="col-7">
-                <input type="text" class="form-control" formControlName="producto" placeholder="Producto" [class.is-invalid]="grupo.get('producto')?.invalid && grupo.get('producto')?.touched">
+                <input type="text" class="form-control" formControlName="producto" placeholder="Producto" [class.is-invalid]="grupo.get('producto')?.invalid && grupo.get('producto')?.touched" [disabled]="!editable">
                 @if (grupo.get('producto')?.invalid && grupo.get('producto')?.touched) {
                   <div class="invalid-feedback">
                     Indica producto
@@ -28,7 +34,7 @@
                 }
               </div>
               <div class="col-3">
-                <input type="number" min="1" class="form-control" formControlName="cantidad" placeholder="Cantidad" [class.is-invalid]="grupo.get('cantidad')?.invalid && grupo.get('cantidad')?.touched">
+                <input type="number" min="1" class="form-control" formControlName="cantidad" placeholder="Cantidad" [class.is-invalid]="grupo.get('cantidad')?.invalid && grupo.get('cantidad')?.touched" [disabled]="!editable">
                 @if (grupo.get('cantidad')?.invalid && grupo.get('cantidad')?.touched) {
                   <div class="invalid-feedback">
                     Introduce una cantidad válida
@@ -36,15 +42,15 @@
                 }
               </div>
               <div class="col-2 text-end">
-                <button type="button" class="btn btn-outline-danger btn-sm" (click)="removeProducto(i)" [disabled]="productos.length === 1" title="Eliminar producto">&minus;</button>
+                <button type="button" class="btn btn-outline-danger btn-sm" (click)="removeProducto(i)" [disabled]="productos.length === 1 || !editable" title="Eliminar producto">&minus;</button>
               </div>
             </div>
-            <button type="button" class="btn btn-secondary btn-sm" (click)="addProducto()">+ Añadir producto</button>
+            <button type="button" class="btn btn-secondary btn-sm" (click)="addProducto()" [disabled]="!editable">+ Añadir producto</button>
           </div>
 
           <div class="mb-3">
             <label for="fechaEntrega" class="form-label">Fecha prevista de entrega</label>
-            <input id="fechaEntrega" type="date" class="form-control" formControlName="fechaEntrega" [class.is-invalid]="editForm.get('fechaEntrega')?.invalid && editForm.get('fechaEntrega')?.touched">
+            <input id="fechaEntrega" type="date" class="form-control" formControlName="fechaEntrega" [class.is-invalid]="editForm.get('fechaEntrega')?.invalid && editForm.get('fechaEntrega')?.touched" [disabled]="!editable">
             @if (editForm.get('fechaEntrega')?.invalid && editForm.get('fechaEntrega')?.touched) {
               <div class="invalid-feedback">
                 Este campo es obligatorio
@@ -54,7 +60,7 @@
 
           <div class="mb-3">
             <label for="estado" class="form-label">Estado</label>
-            <select id="estado" class="form-select" formControlName="estado">
+            <select id="estado" class="form-select" formControlName="estado" [disabled]="!editable">
               <option [ngValue]="'pendiente'">Pendiente</option>
               <option [ngValue]="'preparado'">Preparado</option>
               <option [ngValue]="'enReparto'">En reparto</option>
@@ -63,7 +69,7 @@
             </select>
           </div>
 
-          <button type="submit" class="btn btn-primary w-100" [disabled]="editForm.invalid">
+          <button type="submit" class="btn btn-primary w-100" [disabled]="editForm.invalid || !editable">
             Guardar cambios
           </button>
         </form>

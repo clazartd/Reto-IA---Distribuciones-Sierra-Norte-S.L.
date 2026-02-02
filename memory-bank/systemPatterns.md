@@ -1,43 +1,78 @@
 # System Patterns
 
-## Architecture
-- Arquitectura modular basada en Angular, separando lógica en componentes reusables y servicios preparados para integración REST futura.
-- Separación por funcionalidad: core (servicios, guards, modelos, constantes), features/{feature}, shared/components.
-- Estructura de rutas lazy-loaded, cada conjunto funcional con su módulo y routing propio.
-- Para autenticación, el feature auth contiene sus páginas y lógica exclusiva; core engloba los servicios y guards transversales.
-- **Pantalla de inicio adaptativa**: Dashboard (feature inicio/pages/dashboard/) es el punto de entrada después del login, mostrando contenido y accesos resumidos adaptados estrictamente al rol activo.  
-- **Resúmenes e indicadores**: El dashboard incorpora contadores y gráficos user-friendly, usando PedidosService para resumen y SessionService para contexto de sesión y rol.
-- **NUEVO:** Todas las pantallas principales deben aprovechar el ancho útil de la pantalla (preferentemente >80% en desktop), evitando layouts estrechos o formato "card" salvo casos muy justificados.
+## Separación estricta de responsabilidades
 
-## Key Technical Decisions
-- Simplicidad y responsabilidad única: SRP/SOLID en todos los servicios y componentes.
-- Componentes presentacionales (“tontos”) para formularios/login/dashboard; lógica en servicios (AuthService, SessionService, PedidosService).
-- Tipado estricto y exhaustivo en TypeScript.
-- Rutas principales, incluido el módulo de autenticación/inicio, implementadas siempre como lazy-loaded.
-- Guards para acceso y control de navegación, colaborando con SessionService.
-- Persistencia local de sesión y usuario con sessionStorage/localStorage.
-- Todas las llamadas de autenticación/navegación centralizadas en servicios core.
-- UI bajo Bootstrap y SCSS/CSS3, modular y escalable.
-- Código y comentarios con propósito y puntos críticos claros.
-
-## Design Patterns in Use
-- Atomic/Reusable presentational components.
-- Smart/dumb separation: dashboard y páginas sólo presentan datos y botones, toda lógica contextual reside en servicios.
-- Dashboard pattern: pantalla de inicio adaptativa, con layout y accesos cambiantes según SessionService.
-- Guards como patrón protector de todas las rutas feature.
-- Estructura jerárquica y modular, preparada para integración o extensión de features/filtros de acceso adicionales.
-
-## Component Relationships
-- Jerarquía: App → features/auth (lazy) → LoginComponent (presentational); App → features/inicio (lazy) → DashboardComponent (presentational).
-- AuthService <-> SessionService (control de autenticación y sesión); PedidosService sirve KPIs/resúmenes (solo en dashboard).
-- Guards colaboran con SessionService y redirigen según estado o rol.
-- Communication: exposición de datos, navegación rápida vía botones, nunca menús anidados.
-
-## Critical Implementation Paths
-1. Implementación del Dashboard adaptado por rol tras login.
-2. Provisión de métricas y estados de pedidos vía PedidosService, sin llamadas innecesarias o repetidas.
-3. Navegación clear-to-action: cada rol sólo ve lo relevante y tiene acceso mediante botones directos.
+- **Componentes UI ("tontos")**: muestran la información y sólo emiten eventos de usuario. Ningún componente contiene lógica de negocio relevante (incluso formularios sólo validan restricciones de usuario, nunca reglas funcionales base).
+- **Servicios**: toda lógica de negocio reside aquí (reglas de edición, cancelación, seguridad, comunicación REST).
+- **Guards y SessionService**: controlan acceso a rutas y visibilidad de UI, nunca manipulan datos directamente.
 
 ---
 
-> Actualizar ante cualquier modificación en la estructura de inicio/dashboard, layouts o introducción de nuevas rutas/patrones de resumen gráfico y UX.
+## Control de flujo: ÚNICO uso de bloques `@if` y `@for` (prohibido *ngIf/*for)
+
+- **Regla:** *ngIf y *ngFor están prohibidos en todos los templates. El proyecto utiliza SOLO la sintaxis de bloques de control Angular (`@if (...) {...}` / `@for (...) {...}`) en toda la base de código.
+- **Racional:** 
+  - Mayor coherencia con la evolución de Angular.
+  - Bloques anidados, claros y 100% verificables en linter/onboarding.
+  - Facilita migración futura y revisión automática de templates.
+- **Impacto:** 
+  - Todos los templates legacy deben migrar inmediatamente.
+  - Al subir nuevas features, el CI y code review debe rechazar cualquier uso directo de *ngIf o *ngFor.
+  - Todo el equipo está alineado con esta convención y existe onboarding/documentación expresa.
+  - Uso de bloques preferido incluso para condiciones sencillas o iteraciones triviales.
+- **Dónde:** Documentación, code review, onboarding, y ejemplos funcionales actualizados.
+
+---
+
+## Patrón: Formularios editables bajo condición
+
+- **Situación:** Un pedido sólo puede ser editado si su estado actual es “Registrado” y el usuario tiene perfil COMERCIAL.
+- **Implementación:**
+  - El formulario recibe el pedido y verifica el estado y el rol vía SessionService y modelo.
+  - Si no cumple reglas:
+    - Todos los campos del formulario quedarán deshabilitados (`[disabled]=...`), incluidos selects, inputs, etc.
+    - Un mensaje claro aparece: “Este pedido ya no puede modificarse porque está en proceso”.
+    - El botón "Guardar" queda deshabilitado.
+- **Dónde:** `editar-pedido.component.{ts,html}`.
+- **Ventaja:** El usuario siempre entiende por qué no puede editar, y la UI nunca permite una acción prohibida.
+
+---
+
+## Patrón: Cancelación de pedido irreversible con motivo obligatorio
+
+- **Trigger:** Botón “Cancelar pedido” visible si el pedido no es “Entregado” ni “Cancelado”.
+- **Flujo:**
+  - Abre modal (`ConfirmModalComponent` o `CancelPedidoModalComponent`) que muestra advertencia y requiere campo “Motivo de cancelación” (input obligatorio).
+  - Al confirmar, el servicio `PedidosService.cancelPedido()` recibe el id y motivo, hace PUT `/pedidos/{id}/cancelar` y actualiza el estado a “Cancelado”.
+  - El modal previene cierre accidental, y el formulario no permite continuar sin motivo.
+  - Feedback inmediato tras confirmar.
+- **UX:** Acción evidente, motivo obligatorio, acción irreversible advertida.
+
+---
+
+## Integración con API REST vía servicios
+
+- **PedidosService** es el único responsable de comunicar con API REST real.
+- Todos los métodos llaman a endpoints de backend, nunca hay lógica del lado cliente en los componentes.
+- Confirmaciones, errores y estados propagados mediante observables o promesas.
+- Métodos clave:
+  - `updatePedido(id: number, pedido: Pedido): PUT /pedidos/{id}`
+  - `cancelPedido(id: number, motivo: string): PUT /pedidos/{id}/cancelar`
+
+---
+
+## Modelo Pedido actualizado
+
+- El modelo Pedido (`pedido.model.ts`) debe poseer:
+  - id: number
+  - cliente: string
+  - productos: Producto[]
+  - cantidades: number[]
+  - fechaPrevista: string | Date
+  - estado: string
+  - motivoCancelacion?: string (opcional, sólo en caso de cancelación)
+- NO contiene lógica, sólo representación de datos recibidos/enviados por la API.
+
+---
+
+> Mantener y ampliar estos patrones conforme surjan nuevos flujos críticos (edición, aprobaciones, etc.) para alineación permanente del sistema.

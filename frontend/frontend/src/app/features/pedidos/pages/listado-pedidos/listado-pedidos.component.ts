@@ -8,9 +8,9 @@ import { RouterModule } from '@angular/router';
 import { SessionService } from '../../../../core/services/session.service';
 import { ROLES } from '../../../../core/constants/roles.constants';
 import { NuevoPedidoComponent } from '../nuevo-pedido/nuevo-pedido.component';
-import { AgregarPedidoButtonComponent } from '../../../../shared/components/agregar-pedido-button.component';
-import { EditarPedidoComponent } from '../../../../shared/components/editar-pedido.component';
-import { ConfirmModalComponent } from '../../../../shared/components/confirm-modal.component';
+import { AgregarPedidoButtonComponent } from '../../../../shared/components/agregar-pedido/agregar-pedido-button.component';
+import { EditarPedidoComponent } from '../../../../shared/components/editar-pedido/editar-pedido.component';
+import { CancelPedidoModalComponent } from '../../../../shared/components/cancel-pedido/cancel-pedido-modal.component';
 
 @Component({
   standalone: true,
@@ -24,7 +24,7 @@ import { ConfirmModalComponent } from '../../../../shared/components/confirm-mod
     NuevoPedidoComponent,
     AgregarPedidoButtonComponent,
     EditarPedidoComponent,
-    ConfirmModalComponent
+    CancelPedidoModalComponent
   ],
 })
 export class ListadoPedidosComponent implements OnInit {
@@ -43,6 +43,7 @@ export class ListadoPedidosComponent implements OnInit {
   selectedPedidoToEdit: Pedido | null = null;
   selectedPedidoToCancel: Pedido | null = null;
   showCancelConfirm = false;
+  motivoCancelacion: string = '';
 
   constructor(
     private pedidosService: PedidosService,
@@ -91,7 +92,7 @@ export class ListadoPedidosComponent implements OnInit {
   }
 
   onPedidoEdit(updatedPedido: Pedido): void {
-    this.pedidosService.updatePedido(updatedPedido).subscribe(() => {
+    this.pedidosService.updatePedido(updatedPedido.id, updatedPedido).subscribe(() => {
       const idx = this.pedidos.findIndex(p => p.id === updatedPedido.id);
       if (idx !== -1) {
         this.pedidos[idx] = { ...updatedPedido };
@@ -102,17 +103,19 @@ export class ListadoPedidosComponent implements OnInit {
 
   abrirCancelarPedidoConfirm(pedido: Pedido): void {
     this.selectedPedidoToCancel = pedido;
+    this.motivoCancelacion = '';
     this.showCancelConfirm = true;
   }
 
-  confirmarCancelarPedido(): void {
-    if (!this.selectedPedidoToCancel) return;
-    this.pedidosService.cancelPedido(this.selectedPedidoToCancel.id).subscribe(() => {
+  confirmarCancelarPedido(motivo: string): void {
+    if (!this.selectedPedidoToCancel || !motivo) return;
+    this.pedidosService.cancelPedido(this.selectedPedidoToCancel.id, motivo).subscribe(() => {
       const idx = this.pedidos.findIndex(p => p.id === this.selectedPedidoToCancel!.id);
       if (idx !== -1) {
-        this.pedidos[idx] = { ...this.pedidos[idx], estado: 'cancelado' };
+        this.pedidos[idx] = { ...this.pedidos[idx], estado: 'cancelado', motivoCancelacion: motivo };
         this.filtrar();
         this.selectedPedidoToCancel = null;
+        this.motivoCancelacion = '';
         this.showCancelConfirm = false;
       }
     });
@@ -120,6 +123,7 @@ export class ListadoPedidosComponent implements OnInit {
 
   cancelarCancelarPedido(): void {
     this.selectedPedidoToCancel = null;
+    this.motivoCancelacion = '';
     this.showCancelConfirm = false;
   }
 

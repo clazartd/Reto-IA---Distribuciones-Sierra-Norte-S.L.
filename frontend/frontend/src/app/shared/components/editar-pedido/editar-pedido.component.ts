@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
-import { Pedido } from '../../core/models/pedido.model';
+import { Pedido } from '../../../core/models/pedido.model';
 
 @Component({
   selector: 'app-editar-pedido',
@@ -12,6 +12,7 @@ import { Pedido } from '../../core/models/pedido.model';
 })
 export class EditarPedidoComponent {
   @Input() pedido: Pedido | null = null;
+  @Input() editable: boolean = true;
   @Output() saved = new EventEmitter<Pedido>();
   @Output() closed = new EventEmitter<void>();
 
@@ -27,8 +28,9 @@ export class EditarPedidoComponent {
     });
   }
 
-  open(pedido: Pedido) {
+  open(pedido: Pedido, editable: boolean = true) {
     this.pedido = pedido;
+    this.editable = editable;
     this.editForm.reset();
     this.editForm.patchValue({
       cliente: pedido.cliente,
@@ -59,20 +61,22 @@ export class EditarPedidoComponent {
   }
 
   addProducto() {
-    this.productos.push(this.fb.group({
-      producto: ['', Validators.required],
-      cantidad: ['', [Validators.required, Validators.min(1)]]
-    }));
+    if (this.editable) {
+      this.productos.push(this.fb.group({
+        producto: ['', Validators.required],
+        cantidad: ['', [Validators.required, Validators.min(1)]]
+      }));
+    }
   }
 
   removeProducto(i: number) {
-    if (this.productos.length > 1) {
+    if (this.editable && this.productos.length > 1) {
       this.productos.removeAt(i);
     }
   }
 
   submit() {
-    if (!this.editForm.valid || !this.pedido) return;
+    if (!this.editForm.valid || !this.pedido || !this.editable) return;
     const updated: Pedido = {
       ...this.pedido,
       cliente: this.editForm.value.cliente,

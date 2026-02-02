@@ -2,38 +2,17 @@
 
 ## Últimos cambios implementados
 
-- El menú superior ("navbar") ya no muestra "Pedidos" como dropdown, sino como enlace normal. Todos los cambios de visibilidad y acceso por rol se hacen en el componente de listado.
-- En la pantalla de listado de pedidos, se añadió el botón "+ Agregar nuevo pedido", sólo visible para usuarios con el rol COMERCIAL.
-- El sistema de rutas de pedidos redirecciona automáticamente `/pedidos` a `/pedidos/listado`.
-- La gestión de sesión, guards y visibilidad del menú respetan los patrones definidos en el Memory Bank y están alineadas a los requisitos de experiencia claros y directos.
-- **NUEVO:** Las pantallas principales (dashboard, listado, etc) deben ocupar la mayor parte del ancho útil de la pantalla, no sólo 1/3 ni cajas estrechas. La experiencia debe ser cómoda y visualmente rica en desktop.
+- Refactorizado el modal de cancelación de pedido a un componente reutilizable y desacoplado (`CancelPedidoModalComponent`) presente en `shared/components`. Ahora todo el flujo de cancelación centraliza lógica, validación de motivo y UI accesible, disparando eventos al padre.
+- Eliminadas absolutamente todas las directivas legacy `*ngIf=` de todos los templates. El proyecto emplea única y exclusivamente la sintaxis de bloques de control Angular (`@if (...) { ... }`), alineando las vistas a los nuevos patrones recomendados del framework. Esta convención (prohibido *ngIf y *for) pasa a ser estándar de equipo/proyecto.
+- Todos los modals gestionan entrada y eventos mediante inputs/outputs, evitando acoplamiento de lógica.
+- Standalone Components: todos los componentes reutilizables y pantallas Angular se declaran con `standalone: true` y configuran sus imports explícitamente.
+- Lógica de negocio solo en PedidosService (update/cancelación).
+- Otros patrones: revisión en systemPatterns.md.
 
 ---
 
-## Próximo objetivo: Pantalla de Inicio adaptativa (Dashboard)
-
-**Objetivos principales:**
-- Centralizar la información y accesos tras el login.
-- El contenido y accesos siempre dependen del rol autenticado.
-- Reducir la navegación confusa o superflua.
-- Mostrar indicadores visuales simples del estado de los pedidos (`Registrados`, `Preparados`, `En reparto`, `Entregados`, `Cancelados`).
-
-**Pautas clave para la implementación:**
-- Lenguaje claro, sin tecnicismos.
-- Acciones directas con botones, no menús anidados ni configuraciones ocultas.
-- Indicadores y gráficos user-friendly para visión global según rol.
-- **Visibilidad y contenido estrictamente adaptados al perfil**:
-  - **COMERCIAL**: resumen global, acceso directo a nuevo pedido y alerta por pedidos pendientes de preparación.
-  - **ALMACÉN**: foco en pendientes de preparar con botón destacado.
-  - **REPARTO**: solo entregas en reparto y confirmar entregas.
-  - **ADMINISTRACIÓN**: sólo consulta/histórico/soporte.
-  - **DIRECCIÓN**: visión global y acceso histórico.
-- Sin edición directa desde la pantalla de inicio.
-
-**Componente Angular sugerido:**  
-src/app/features/inicio/pages/dashboard/dashboard.component.{ts,html,scss}  
-Responsabilidad: resumen gráfico + accesos según rol (usa SessionService y PedidosService).
+## Próximo objetivo: Validar flujo funcional completo (edición, cancelación) y documentar aprendizaje de la migración a bloques de control en los tests y el onboarding técnico.
 
 ---
 
-> Mantener este contexto actualizado mientras se diseñe y ejecute el Dashboard para garantizar alineación continua con requisitos y arquitectura del proyecto.
+> Mantener el contexto y reforzar en el onboarding de nuevos miembros la convención: JAMÁS usar *ngIf ni *for, siempre bloques.

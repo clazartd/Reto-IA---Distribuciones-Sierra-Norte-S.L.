@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { SessionService } from '../../../../core/services/session.service';
 import { PedidosService } from '../../../../core/services/pedidos.service';
 import { ROLES } from '../../../../core/constants/roles.constants';
-import { AgregarPedidoButtonComponent } from '../../../../shared/components/agregar-pedido-button.component';
+import { AgregarPedidoButtonComponent } from '../../../../shared/components/agregar-pedido/agregar-pedido-button.component';
 import { NuevoPedidoComponent } from '../../../pedidos/pages/nuevo-pedido/nuevo-pedido.component';
 
 interface UsuarioDashboard {
