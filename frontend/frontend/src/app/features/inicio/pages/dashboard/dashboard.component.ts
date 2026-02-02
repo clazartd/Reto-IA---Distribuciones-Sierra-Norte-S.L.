@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { SessionService } from '../../../../core/services/session.service';
 import { PedidosService } from '../../../../core/services/pedidos.service';
 import { ROLES } from '../../../../core/constants/roles.constants';
+import { AgregarPedidoButtonComponent } from '../../../../shared/components/agregar-pedido-button.component';
+import { NuevoPedidoComponent } from '../../../pedidos/pages/nuevo-pedido/nuevo-pedido.component';
 
 interface UsuarioDashboard {
   nombre: string;
@@ -23,12 +25,19 @@ interface PedidosResumen {
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
-  imports: [CommonModule, RouterModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    AgregarPedidoButtonComponent,
+    NuevoPedidoComponent
+  ],
 })
 export class DashboardComponent implements OnInit {
   usuario: UsuarioDashboard = { nombre: '', rol: '' };
   resumen: PedidosResumen = { registrados: 0, preparados: 0, enReparto: 0, entregados: 0, cancelados: 0 };
   loading = true;
+
+  @ViewChild('nuevoPedidoModal') nuevoPedidoModal!: NuevoPedidoComponent;
 
   // Controla el layout y accesos rápidos
   get esComercial(): boolean { return this.usuario.rol === ROLES.COMERCIAL; }
@@ -63,4 +72,11 @@ export class DashboardComponent implements OnInit {
       }
     });
   }
+
+  abrirNuevoPedidoModal(): void {
+    this.nuevoPedidoModal.open();
+  }
+
+  // Optionally, handle the (closed) output event if needed
+  nuevoPedidoModalClosed(): void {}
 }

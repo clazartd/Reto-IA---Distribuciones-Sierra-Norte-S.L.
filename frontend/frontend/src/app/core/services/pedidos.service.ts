@@ -24,8 +24,67 @@ export class PedidosService {
     return this.http.post(this.API_URL, pedido);
   }
 
+  // TODO: Reemplazar con llamada real al backend cuando esté disponible
   getPedidos(): Observable<Pedido[]> {
-    return this.http.get<Pedido[]>(this.API_URL);
+    // return this.http.get<Pedido[]>(this.API_URL);
+    return of([
+      {
+        id: 1,
+        cliente: 'Pepe Gómez',
+        productos: [
+          { producto: 'Manzanas', cantidad: 5 },
+          { producto: 'Peras', cantidad: 3 }
+        ],
+        fechaPrevistaEntrega: '2026-02-12',
+        estado: 'registrado'
+      },
+      {
+        id: 2,
+        cliente: 'María Pérez',
+        productos: [
+          { producto: 'Plátanos', cantidad: 4 }
+        ],
+        fechaPrevistaEntrega: '2026-02-14',
+        estado: 'preparado'
+      },
+      {
+        id: 3,
+        cliente: 'Juan Ruiz',
+        productos: [
+          { producto: 'Naranjas', cantidad: 7 },
+          { producto: 'Manzanas', cantidad: 2 }
+        ],
+        fechaPrevistaEntrega: '2026-02-13',
+        estado: 'enReparto'
+      },
+      {
+        id: 4,
+        cliente: 'Lucía Torres',
+        productos: [
+          { producto: 'Peras', cantidad: 6 }
+        ],
+        fechaPrevistaEntrega: '2026-02-13',
+        estado: 'entregado'
+      },
+      {
+        id: 5,
+        cliente: 'Carlos González',
+        productos: [
+          { producto: 'Manzanas', cantidad: 10 }
+        ],
+        fechaPrevistaEntrega: '2026-02-15',
+        estado: 'cancelado',
+        motivoCancelacion: 'Cliente lo solicitó'
+      }
+    ]);
+  }
+
+  updatePedido(pedido: Pedido): Observable<any> {
+    return this.http.put(`${this.API_URL}/${pedido.id}`, pedido);
+  }
+
+  cancelPedido(id: number | string): Observable<any> {
+    return this.http.patch(`${this.API_URL}/${id}`, { estado: 'cancelado' });
   }
 
   // Mock para dashboard

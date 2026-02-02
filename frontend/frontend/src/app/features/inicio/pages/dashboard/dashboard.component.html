@@ -54,7 +54,7 @@
 
     @if (esComercial) {
       <div class="dashboard-block mb-3">
-        <a class="btn btn-success me-2" [routerLink]="['/pedidos/nuevo']">Nuevo pedido</a>
+        <app-agregar-pedido-button (agregarPedido)="abrirNuevoPedidoModal()"></app-agregar-pedido-button>
         <a class="btn btn-primary" [routerLink]="['/pedidos/listado']">Ver pedidos registrados</a>
         @if (resumen.registrados > 0) {
           <div class="alert alert-warning mt-3">
@@ -107,4 +107,6 @@
     }
 
   </section>
+
+  <app-nuevo-pedido #nuevoPedidoModal (closed)="nuevoPedidoModalClosed()"></app-nuevo-pedido>
 </div>

@@ -3,19 +3,7 @@
 
   @if (esComercial) {
     <div class="mb-3">
-      <button class="btn btn-success" (click)="abrirNuevoPedidoModal()">
-        + Agregar nuevo pedido
-      </button>
-    </div>
-  }
-
-  <!-- MODAL NUEVO PEDIDO -->
-  @if (showNuevoPedidoModal) {
-    <div class="custom-modal-backdrop" (click)="cerrarNuevoPedidoModal()">
-      <div class="custom-modal" (click)="$event.stopPropagation()">
-        <button class="custom-modal-close" type="button" (click)="cerrarNuevoPedidoModal()">&times;</button>
-        <app-nuevo-pedido></app-nuevo-pedido>
-      </div>
+      <app-agregar-pedido-button (agregarPedido)="abrirNuevoPedidoModal()"></app-agregar-pedido-button>
     </div>
   }
 
@@ -39,6 +27,19 @@
       </button>
     </div>
   </form>
+
+  <app-nuevo-pedido #nuevoPedidoModal (closed)="nuevoPedidoModalClosed()"></app-nuevo-pedido>
+  <app-editar-pedido #editarPedidoModal (saved)="onPedidoEdit($event)" (closed)="selectedPedidoToEdit=null"></app-editar-pedido>
+
+  <app-confirm-modal
+    [show]="showCancelConfirm && selectedPedidoToCancel !== null"
+    [title]="'Cancelar pedido'"
+    [message]="'¿Estás seguro de que deseas cancelar el pedido <b>#' + selectedPedidoToCancel?.id + '</b> de <b>' + selectedPedidoToCancel?.cliente + '</b>?'"
+    [cancelText]="'No, volver'"
+    [confirmText]="'Sí, cancelar'"
+    (confirmed)="confirmarCancelarPedido()"
+    (cancelled)="cancelarCancelarPedido()"
+  ></app-confirm-modal>
 
   @if (loading) {
     <div class="alert alert-info">Cargando pedidos...</div>
@@ -68,15 +69,25 @@
               <td>{{ pedido.id }}</td>
               <td>{{ pedido.cliente }}</td>
               <td>
-                <span [class]="pedido.estado === 'Cancelado' ? 'text-danger' : pedido.estado === 'Registrado' ? 'text-primary' : 'text-success'">
+                <span [class]="pedido.estado === 'cancelado' ? 'text-danger' : pedido.estado === 'registrado' ? 'text-primary' : 'text-success'">
                   {{ pedido.estado }}
                 </span>
               </td>
               <td>{{ pedido.fechaPrevistaEntrega }}</td>
               <td>
-                <!-- Acciones: editar o cancelar, detalles, etc. (lógica en iteraciones siguientes) -->
-                <a class="btn btn-sm btn-outline-primary" [routerLink]="['/pedidos/editar', pedido.id]">Editar</a>
-                <!-- Botón cancelar va aquí en futuras iteraciones -->
+                <button class="btn btn-sm btn-outline-primary me-2" type="button" (click)="abrirEditarPedidoModal(pedido)" aria-label="Editar">
+                  <i class="bi bi-pencil" aria-hidden="true"></i>
+                </button>
+                @if (pedido.estado !== 'cancelado') {
+                  <button
+                    class="btn btn-sm btn-outline-danger"
+                    type="button"
+                    (click)="abrirCancelarPedidoConfirm(pedido)"
+                    aria-label="Cancelar"
+                  >
+                    <i class="bi bi-x-circle" aria-hidden="true"></i>
+                  </button>
+                }
               </td>
             </tr>
           }

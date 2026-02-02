@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { PedidosService } from '../../../../core/services/pedidos.service';
@@ -12,10 +12,13 @@ import { Pedido } from '../../../../core/models/pedido.model';
   imports: [CommonModule, ReactiveFormsModule],
 })
 export class NuevoPedidoComponent {
+  @Output() closed = new EventEmitter<void>();
+
   pedidoForm: FormGroup;
   statusMessage: string | null = null;
   errorMessage: string | null = null;
   isSubmitting = false;
+  showModal = false;
 
   constructor(private fb: FormBuilder, private pedidosService: PedidosService) {
     this.pedidoForm = this.fb.group({
@@ -23,6 +26,16 @@ export class NuevoPedidoComponent {
       productos: this.fb.array([this.createProductoGroup()]), // Al menos un producto
       fechaEntrega: ['', Validators.required],
     });
+  }
+
+  // For external use: eg, let modal open be controlled from parent via ViewChild
+  open() {
+    this.showModal = true;
+  }
+
+  close() {
+    this.showModal = false;
+    this.closed.emit();
   }
 
   get productos(): FormArray {

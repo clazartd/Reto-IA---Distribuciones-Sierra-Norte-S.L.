@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PedidosService } from '../../../../core/services/pedidos.service';
 import { Pedido } from '../../../../core/models/pedido.model';
@@ -8,13 +8,24 @@ import { RouterModule } from '@angular/router';
 import { SessionService } from '../../../../core/services/session.service';
 import { ROLES } from '../../../../core/constants/roles.constants';
 import { NuevoPedidoComponent } from '../nuevo-pedido/nuevo-pedido.component';
+import { AgregarPedidoButtonComponent } from '../../../../shared/components/agregar-pedido-button.component';
+import { EditarPedidoComponent } from '../../../../shared/components/editar-pedido.component';
+import { ConfirmModalComponent } from '../../../../shared/components/confirm-modal.component';
 
 @Component({
   standalone: true,
   selector: 'app-listado-pedidos',
   templateUrl: './listado-pedidos.component.html',
   styleUrls: ['./listado-pedidos.component.scss'],
-  imports: [CommonModule, FormsModule, RouterModule, NuevoPedidoComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterModule,
+    NuevoPedidoComponent,
+    AgregarPedidoButtonComponent,
+    EditarPedidoComponent,
+    ConfirmModalComponent
+  ],
 })
 export class ListadoPedidosComponent implements OnInit {
   pedidos: Pedido[] = [];
@@ -26,7 +37,12 @@ export class ListadoPedidosComponent implements OnInit {
   loading = true;
   error: string | null = null;
 
-  showNuevoPedidoModal = false;
+  @ViewChild('nuevoPedidoModal') nuevoPedidoModal!: NuevoPedidoComponent;
+  @ViewChild('editarPedidoModal') editarPedidoModal!: EditarPedidoComponent;
+
+  selectedPedidoToEdit: Pedido | null = null;
+  selectedPedidoToCancel: Pedido | null = null;
+  showCancelConfirm = false;
 
   constructor(
     private pedidosService: PedidosService,
@@ -66,10 +82,47 @@ export class ListadoPedidosComponent implements OnInit {
   }
 
   abrirNuevoPedidoModal(): void {
-    this.showNuevoPedidoModal = true;
+    this.nuevoPedidoModal.open();
   }
 
-  cerrarNuevoPedidoModal(): void {
-    this.showNuevoPedidoModal = false;
+  abrirEditarPedidoModal(pedido: Pedido): void {
+    this.selectedPedidoToEdit = pedido;
+    setTimeout(() => this.editarPedidoModal.open(pedido), 0);
   }
+
+  onPedidoEdit(updatedPedido: Pedido): void {
+    this.pedidosService.updatePedido(updatedPedido).subscribe(() => {
+      const idx = this.pedidos.findIndex(p => p.id === updatedPedido.id);
+      if (idx !== -1) {
+        this.pedidos[idx] = { ...updatedPedido };
+        this.filtrar();
+      }
+    });
+  }
+
+  abrirCancelarPedidoConfirm(pedido: Pedido): void {
+    this.selectedPedidoToCancel = pedido;
+    this.showCancelConfirm = true;
+  }
+
+  confirmarCancelarPedido(): void {
+    if (!this.selectedPedidoToCancel) return;
+    this.pedidosService.cancelPedido(this.selectedPedidoToCancel.id).subscribe(() => {
+      const idx = this.pedidos.findIndex(p => p.id === this.selectedPedidoToCancel!.id);
+      if (idx !== -1) {
+        this.pedidos[idx] = { ...this.pedidos[idx], estado: 'cancelado' };
+        this.filtrar();
+        this.selectedPedidoToCancel = null;
+        this.showCancelConfirm = false;
+      }
+    });
+  }
+
+  cancelarCancelarPedido(): void {
+    this.selectedPedidoToCancel = null;
+    this.showCancelConfirm = false;
+  }
+
+  // Optionally, handle the (closed) output event if needed
+  nuevoPedidoModalClosed(): void {}
 }
