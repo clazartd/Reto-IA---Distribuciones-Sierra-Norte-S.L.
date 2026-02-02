@@ -1,21 +1,38 @@
-# Progress Log
+# Progress
 
-## What Currently Works
-- _Document features, modules, or workflows that are implemented and confirmed as functional._
+## What Works
+- Arquitectura de autenticación y gestión de sesión definida y alineada con buenas prácticas aXet.
+- Estructura de carpetas y módulos diseñada según separación funcional (core/features/shared).
+- Plan detallado para AuthService, SessionService, modelo UserModel y roles.
+- Definido el flujo esperado de sesión (login, persistencia, guard, logout).
+- Fix implementado: LoginComponent ahora es standalone y se importa en AuthModule como indica Angular 16+, eliminando error de declaración.
 
-## Remaining Work
-- _Track what is left to build, fix, or research. Use a checklist or backlog style for clarity._
+## What's Left to Build
+- [ ] Crear la estructura de carpetas y archivos obligatoria en src/app/.
+- [ ] Implementar LoginComponent y el formulario reactivo con validación.
+- [ ] Desarrollar AuthService (login/logout/isAuthenticated) y simular endpoint backend.
+- [ ] Programar SessionService para gestionar usuario y rol de forma persistente.
+- [ ] Definir y exportar modelo UserModel y roles constantes.
+- [ ] Implementar AuthGuard y proteger/validar rutas.
+- [ ] Formular mensajes claros y usabilidad elevada en la pantalla de login.
+- [ ] Validar lazy-loading en el módulo de autenticación y protección para rutas futuras.
+- [ ] Documentar flujo, patrón y uso de cada componente y servicio.
+
+## Current Status
+Fase de diseño y planificación completa para la funcionalidad de autenticación y control de sesión a nivel frontend. La app está lista para comenzar la implementación en Angular, siguiendo la estructura modular y alineada con las prácticas y constraints documentadas.
 
 ## Known Issues
-- _List current bugs, blockers, or areas needing investigation._
+- No existen impedimentos técnicos, a la espera de implementación.
+- Riesgo principal: asegurar persistencia y control de sesión robustos solo en frontend.
 
-## Status Overview
-- _Summarize current state, recent achievements, and any momentum shifts._
-
-## Evolution of Project Decisions
-- _Log major changes to project strategy, scope, or technical approach, noting reasoning when possible._
+## Project Decisions Evolution
+- Refuerzo de separación por funcionalidad como núcleo de arquitectura.
+- Experiencia y mensajes dirigidos a usuarios sin conocimientos técnicos.
+- Preparación de guards y control de permisos desde la primer release del login.
+- Estructura y código preparados para escalado y cobertura de nuevos módulos.
+- Adoptada norma UI: está prohibido usar *ngIf y *ngFor en archivos .html (Angular); obligatorio usar @if y estructuras modernas para control de renderizado y listas.
+- Corrección adoptada: LoginComponent standalone debe ser importado, no declarado, en los NgModules.
 
 ---
 
-> Use this for ongoing status.  
-> **Update regularly to aid future sessions and after any significant update or issue.**
+> Actualizar tras cada avance clave en la implementación de la funcionalidad de autenticación, aparecimiento de issues o validación de nuevos flujos.

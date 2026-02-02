@@ -1,0 +1,19 @@
+/* Estilos específicos para la pantalla de login */
+/* Mantener el diseño limpio, centrado y usable */
+
+.login-container {
+  background: #f4f8fb;
+  min-height: 100vh;
+}
+
+form {
+  box-shadow: 0 0.5rem 1rem rgba(47, 67, 120, 0.05);
+}
+
+input.ng-invalid.ng-touched {
+  border-color: #dc3545;
+}
+
+.invalid-feedback {
+  font-size: 0.95em;
+}
