@@ -3,10 +3,19 @@
   <div class="container">
     <span class="navbar-brand">Aplicación</span>
     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-      @for (item of visibleItems; track item.route) {
-        <li class="nav-item">
-          <a class="nav-link" [routerLink]="item.route" routerLinkActive="active">{{ item.label }}</a>
-        </li>
+      @for (item of visibleItems; track item.label) {
+        @if (!item.children) {
+          <!-- Normal nav item -->
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="item.route" routerLinkActive="active">{{ item.label }}</a>
+          </li>
+        }
+        @if (item.children) {
+          <!-- Pedidos as a simple nav-link, not dropdown -->
+          <li class="nav-item">
+            <a class="nav-link" [routerLink]="['/pedidos']">{{ item.label }}</a>
+          </li>
+        }
       }
     </ul>
     <span class="navbar-text text-body-secondary me-3">

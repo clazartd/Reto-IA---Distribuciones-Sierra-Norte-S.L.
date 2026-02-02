@@ -1,0 +1,43 @@
+.dashboard-container {
+  background: #fff;
+  border-radius: 8px;
+  margin-top: 40px;
+}
+
+.status-box {
+  padding: 1rem;
+  border-radius: 7px;
+  text-align: center;
+  font-size: 1.1rem;
+  background-color: #f5f5f5;
+  transition: box-shadow 0.2s;
+}
+
+.status-count {
+  font-size: 2.2rem;
+  font-weight: bold;
+  margin-bottom: 0.15em;
+}
+
+.status-label {
+  font-size: 1rem;
+  color: #555;
+}
+
+.status-registrados { border: 2px solid #1877f2; color: #1877f2; background: #eef6fb; }
+.status-preparados { border: 2px solid #12b886; color: #12b886; background: #e8faf4; }
+.status-enreparto { border: 2px solid #f9be36; color: #ad8101; background: #fff7e0; }
+.status-entregados { border: 2px solid #0ca678; color: #0ca678; background: #eafaf3; }
+.status-cancelados { border: 2px solid #fa5252; color: #fa5252; background: #fff1f1; }
+
+.dashboard-block {
+  background: #f8f9fa;
+  border-radius: 7px;
+  padding: 1.2rem 1rem;
+  box-shadow: 0 1px 4px #0001;
+}
+
+.dashboard-block .btn {
+  margin-right: 0.4rem;
+  margin-bottom: 0.5rem;
+}

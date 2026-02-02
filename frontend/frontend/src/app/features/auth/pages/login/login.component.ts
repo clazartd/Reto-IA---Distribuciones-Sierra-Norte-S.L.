@@ -23,7 +23,7 @@ export class LoginComponent {
 
   // Credenciales por defecto para desarrollo/demo (eliminar cuando se conecte API)
   private readonly defaultDevUser = {
-    username: 'admin',
+    username: 'comercial',
     password: '1234'
   };
 

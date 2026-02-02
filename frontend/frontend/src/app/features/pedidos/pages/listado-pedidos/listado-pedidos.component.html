@@ -1,0 +1,87 @@
+<div class="bg-white rounded shadow p-4">
+  <h2 class="mb-4">Listado de pedidos</h2>
+
+  @if (esComercial) {
+    <div class="mb-3">
+      <button class="btn btn-success" (click)="abrirNuevoPedidoModal()">
+        + Agregar nuevo pedido
+      </button>
+    </div>
+  }
+
+  <!-- MODAL NUEVO PEDIDO -->
+  @if (showNuevoPedidoModal) {
+    <div class="custom-modal-backdrop" (click)="cerrarNuevoPedidoModal()">
+      <div class="custom-modal" (click)="$event.stopPropagation()">
+        <button class="custom-modal-close" type="button" (click)="cerrarNuevoPedidoModal()">&times;</button>
+        <app-nuevo-pedido></app-nuevo-pedido>
+      </div>
+    </div>
+  }
+
+  <form class="row g-3 mb-3" (ngSubmit)="filtrar()">
+    <div class="col-md-4">
+      <label class="form-label">Estado</label>
+      <select class="form-select" [(ngModel)]="filtroEstado" name="estado" (change)="filtrar()">
+        <option value="">Todos</option>
+        @for (estado of estadosUnicos; track estado) {
+          <option [ngValue]="estado">{{ estado }}</option>
+        }
+      </select>
+    </div>
+    <div class="col-md-4">
+      <label class="form-label">Fecha prevista</label>
+      <input type="date" class="form-control" [(ngModel)]="filtroFecha" name="fechaEntrega" (change)="filtrar()" />
+    </div>
+    <div class="col-md-4 d-flex align-items-end">
+      <button type="button" class="btn btn-outline-secondary me-2" (click)="filtroEstado=''; filtroFecha=''; filtrar()">
+        Limpiar filtros
+      </button>
+    </div>
+  </form>
+
+  @if (loading) {
+    <div class="alert alert-info">Cargando pedidos...</div>
+  }
+  @if (error) {
+    <div class="alert alert-danger">{{ error }}</div>
+  }
+  @if (!loading && !error && filteredPedidos.length === 0) {
+    <div class="alert alert-warning">No hay pedidos coincidentes.</div>
+  }
+
+  @if (!loading && !error && filteredPedidos.length > 0) {
+    <div class="table-responsive">
+      <table class="table table-bordered align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>ID</th>
+            <th>Cliente</th>
+            <th>Estado</th>
+            <th>Fecha prevista</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (pedido of filteredPedidos; track pedido.id) {
+            <tr>
+              <td>{{ pedido.id }}</td>
+              <td>{{ pedido.cliente }}</td>
+              <td>
+                <span [class]="pedido.estado === 'Cancelado' ? 'text-danger' : pedido.estado === 'Registrado' ? 'text-primary' : 'text-success'">
+                  {{ pedido.estado }}
+                </span>
+              </td>
+              <td>{{ pedido.fechaPrevistaEntrega }}</td>
+              <td>
+                <!-- Acciones: editar o cancelar, detalles, etc. (lógica en iteraciones siguientes) -->
+                <a class="btn btn-sm btn-outline-primary" [routerLink]="['/pedidos/editar', pedido.id]">Editar</a>
+                <!-- Botón cancelar va aquí en futuras iteraciones -->
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

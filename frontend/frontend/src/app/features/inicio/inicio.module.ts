@@ -2,10 +2,10 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from '../../core/guards/auth.guard';
-import { InicioComponent } from './inicio.component';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
 
 const routes: Routes = [
-  { path: '', component: InicioComponent, canActivate: [AuthGuard] }
+  { path: '', component: DashboardComponent, canActivate: [AuthGuard] }
 ];
 
 @NgModule({
@@ -13,7 +13,7 @@ const routes: Routes = [
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
-    InicioComponent
+    DashboardComponent
   ],
   exports: []
 })

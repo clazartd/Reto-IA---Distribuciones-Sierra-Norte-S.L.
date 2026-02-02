@@ -15,5 +15,9 @@ export const routes: Routes = [
     canActivate: [AuthGuard, RoleGuard],
     data: { roles: [ROLES.DIRECCION, ROLES.COMERCIAL, ROLES.ALMACEN, ROLES.REPARTO, ROLES.ADMINISTRACION] }
   },
+  {
+    path: 'pedidos',
+    loadChildren: () => import('./features/pedidos/pedidos.module').then(m => m.PedidosModule),
+  },
   { path: '**', redirectTo: 'login' }
 ];

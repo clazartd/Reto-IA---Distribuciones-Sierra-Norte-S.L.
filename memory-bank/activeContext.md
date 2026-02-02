@@ -1,67 +1,39 @@
 # Active Context
 
-## Funcionalidad: Gestión de navegación y roles (Nueva)
+## Últimos cambios implementados
 
-### Objetivo
-Implementar un sistema de navegación frontend seguro y escalable que:
-
-- Proteja rutas según autenticación y rol (usando guards especializados)
-- Permita navegación coherente y restringida por perfil de usuario
-- Realice redirecciones automáticas a vistas válidas y seguras
-- Oculte en el menú (UI) las opciones no autorizadas al perfil activo
-- Sirva como base para módulos funcionales futuros (mínima lógica hardcoded)
-
-### Roles (definidos en `core/constants/roles.constants.ts`)
-- DIRECCION
-- COMERCIAL
-- ALMACEN
-- REPARTO
-- ADMINISTRACION
-
-### Componentes y Elementos Implementados/Por Implementar
-
-#### 1. Guards de navegación
-
-- **AuthGuard**: Verifica sesión activa, redirige a `/login` si no existe.
-- **RoleGuard**: Revisa si el usuario autenticado (obtenido vía `SessionService`) tiene acceso según `route.data.roles`.
-  - Si no está autorizado: redirige a una vista segura (ej. home por rol o `/login`).
-  - Sin lógica de negocio, solo chequeo de rol y acceso.
-
-#### 2. Routing protegido y lazy-loaded
-
-- Todas las rutas/procesos sensibles protegidas con:
-  - `canActivate: [AuthGuard, RoleGuard]`
-  - `data: { roles: ['ROL1', 'ROL2'] }`
-- Lazy loading obligatorio para los módulos por feature.
-- Rutas de login sin restricciones.
-
-#### 3. Acceso por rol (tabla de permisos)
-
-| Rol         | Puede acceder                    | No puede acceder               |
-|-------------|----------------------------------|-------------------------------|
-| DIRECCION   | Consulta global, Histórico       | Acciones operativas           |
-| COMERCIAL   | Consulta/Registro/Modif. pedidos | Preparación, Reparto, Histórico|
-| ALMACEN     | Pendientes/Preparación pedidos   | Registro/Edición, Reparto     |
-| REPARTO     | Pedidos en reparto, Confirmación | Registro/Preparación, Histórico|
-| ADMINISTRACION | Consulta/Historico pedidos    | Acciones operativas           |
-
-#### 4. Menú de navegación dinámico
-
-- Construido con base en el rol (SessionService)
-- Solo muestra links permitidos al perfil activo (nunca muestra links deshabilitados)
-- Textos claros, estructura simple, reacción instantánea ante login/logout
-
-#### 5. Redirecciones automáticas
-
-- Tras login: Según rol inicial asignar ruta base permitida (primera opción válida).
-- Error acceso: Si el usuario intenta acceder a una ruta no permitida, se redirige automáticamente a una ruta segura relevante a su perfil o a login.
-
-#### 6. Base técnica
-
-- Guards y sistema de menús desacoplados de lógica de negocio, listos para conectar con módulos futuros.
-- No redefinir roles; ampliar `roles.constants.ts` solo si nace un nuevo perfil global.
-- Toda gestión de sesión/rol via `SessionService`.
+- El menú superior ("navbar") ya no muestra "Pedidos" como dropdown, sino como enlace normal. Todos los cambios de visibilidad y acceso por rol se hacen en el componente de listado.
+- En la pantalla de listado de pedidos, se añadió el botón "+ Agregar nuevo pedido", sólo visible para usuarios con el rol COMERCIAL.
+- El sistema de rutas de pedidos redirecciona automáticamente `/pedidos` a `/pedidos/listado`.
+- La gestión de sesión, guards y visibilidad del menú respetan los patrones definidos en el Memory Bank y están alineadas a los requisitos de experiencia claros y directos.
+- **NUEVO:** Las pantallas principales (dashboard, listado, etc) deben ocupar la mayor parte del ancho útil de la pantalla, no sólo 1/3 ni cajas estrechas. La experiencia debe ser cómoda y visualmente rica en desktop.
 
 ---
 
-> Este contexto se irá refinando según se desarrollen guards, menús y ajustes en la navegación. Las reglas de acceso arriba citadas deben ser invariables para el control seguro de la aplicación.
+## Próximo objetivo: Pantalla de Inicio adaptativa (Dashboard)
+
+**Objetivos principales:**
+- Centralizar la información y accesos tras el login.
+- El contenido y accesos siempre dependen del rol autenticado.
+- Reducir la navegación confusa o superflua.
+- Mostrar indicadores visuales simples del estado de los pedidos (`Registrados`, `Preparados`, `En reparto`, `Entregados`, `Cancelados`).
+
+**Pautas clave para la implementación:**
+- Lenguaje claro, sin tecnicismos.
+- Acciones directas con botones, no menús anidados ni configuraciones ocultas.
+- Indicadores y gráficos user-friendly para visión global según rol.
+- **Visibilidad y contenido estrictamente adaptados al perfil**:
+  - **COMERCIAL**: resumen global, acceso directo a nuevo pedido y alerta por pedidos pendientes de preparación.
+  - **ALMACÉN**: foco en pendientes de preparar con botón destacado.
+  - **REPARTO**: solo entregas en reparto y confirmar entregas.
+  - **ADMINISTRACIÓN**: sólo consulta/histórico/soporte.
+  - **DIRECCIÓN**: visión global y acceso histórico.
+- Sin edición directa desde la pantalla de inicio.
+
+**Componente Angular sugerido:**  
+src/app/features/inicio/pages/dashboard/dashboard.component.{ts,html,scss}  
+Responsabilidad: resumen gráfico + accesos según rol (usa SessionService y PedidosService).
+
+---
+
+> Mantener este contexto actualizado mientras se diseñe y ejecute el Dashboard para garantizar alineación continua con requisitos y arquitectura del proyecto.

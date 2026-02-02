@@ -1,0 +1,110 @@
+<div class="dashboard-container bg-white shadow rounded p-4" style="margin-top:32px;">
+  <!-- ENCABEZADO -->
+  <header class="mb-4">
+    <h2 class="fw-bold">Gestión de Pedidos – Distribuciones Sierra Norte</h2>
+    <div class="text-muted mt-2">
+      Usuario: <strong>{{ usuario.nombre }}</strong>
+      |
+      Perfil: <strong>{{ usuario.rol }}</strong>
+    </div>
+  </header>
+
+  <!-- RESUMEN GLOBAL Y GRAFICOS (por estado) -->
+  <section class="mb-4">
+    <div class="row text-center">
+      <div class="col-6 col-md-2 mb-3" style="min-width: 120px;">
+        <div class="status-box status-registrados shadow">
+          <div class="status-count">{{ resumen.registrados }}</div>
+          <div class="status-label">Registrados</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-2 mb-3" style="min-width: 120px;">
+        <div class="status-box status-preparados shadow">
+          <div class="status-count">{{ resumen.preparados }}</div>
+          <div class="status-label">Preparados</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-2 mb-3" style="min-width: 120px;">
+        <div class="status-box status-enreparto shadow">
+          <div class="status-count">{{ resumen.enReparto }}</div>
+          <div class="status-label">En reparto</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-2 mb-3" style="min-width: 120px;">
+        <div class="status-box status-entregados shadow">
+          <div class="status-count">{{ resumen.entregados }}</div>
+          <div class="status-label">Entregados</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-2 mb-3" style="min-width: 120px;">
+        <div class="status-box status-cancelados shadow">
+          <div class="status-count">{{ resumen.cancelados }}</div>
+          <div class="status-label">Cancelados</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  @if (loading) {
+    <div class="alert alert-info">Cargando información del sistema...</div>
+  }
+
+  <!-- BLOQUES DE ACCIONES Y AVISOS POR ROL -->
+  <section class="mt-4">
+
+    @if (esComercial) {
+      <div class="dashboard-block mb-3">
+        <a class="btn btn-success me-2" [routerLink]="['/pedidos/nuevo']">Nuevo pedido</a>
+        <a class="btn btn-primary" [routerLink]="['/pedidos/listado']">Ver pedidos registrados</a>
+        @if (resumen.registrados > 0) {
+          <div class="alert alert-warning mt-3">
+            Tienes {{ resumen.registrados }} pedidos pendientes de preparación.
+          </div>
+        }
+      </div>
+    }
+
+    @if (esAlmacen) {
+      <div class="dashboard-block mb-3">
+        <a class="btn btn-primary" [routerLink]="['/pedidos/listado']">Preparar pedidos</a>
+        @if (resumen.registrados > 0) {
+          <div class="alert alert-danger mt-3">
+            Hay {{ resumen.registrados }} pedidos registrados pendientes de preparación.
+          </div>
+        }
+      </div>
+    }
+
+    @if (esReparto) {
+      <div class="dashboard-block mb-3">
+        <a class="btn btn-info" [routerLink]="['/pedidos/listado']">Confirmar entregas</a>
+        @if (resumen.enReparto > 0) {
+          <div class="alert alert-warning mt-3">
+            Tienes {{ resumen.enReparto }} pedidos en reparto pendientes de entrega.
+          </div>
+        }
+      </div>
+    }
+
+    @if (esAdmin) {
+      <div class="dashboard-block mb-3">
+        <a class="btn btn-primary" [routerLink]="['/pedidos/listado']">Consultar pedidos</a>
+        <a class="btn btn-outline-secondary" [routerLink]="['/pedidos/listado']">Ver histórico</a>
+        <div class="alert alert-info mt-3">
+          Acceso orientado a consultas y soporte del sistema.
+        </div>
+      </div>
+    }
+
+    @if (esDireccion) {
+      <div class="dashboard-block mb-3">
+        <a class="btn btn-primary" [routerLink]="['/pedidos/listado']">Consultar pedidos</a>
+        <a class="btn btn-outline-secondary" [routerLink]="['/pedidos/listado']">Histórico</a>
+        <div class="alert alert-info mt-3">
+          Visión global del estado de pedidos. Accesos de consulta e histórico.
+        </div>
+      </div>
+    }
+
+  </section>
+</div>
