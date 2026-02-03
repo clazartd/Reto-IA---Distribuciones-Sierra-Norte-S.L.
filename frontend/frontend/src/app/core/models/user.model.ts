@@ -1,9 +1,9 @@
-/**
- * Interfaz UserModel tipada para uso en autenticación y control de sesión.
- * Extensible para futuros atributos pero limitado ahora a id, username y role.
- */
+import { Role } from '../constants/roles.constants';
+
 export interface User {
-  id: number;
+  id: string;
   username: string;
-  role: string;
+  role: Role;
+  nombre?: string;
+  // otros campos opcionales
 }

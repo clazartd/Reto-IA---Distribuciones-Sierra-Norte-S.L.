@@ -1,11 +1,11 @@
 /**
- * ROLES: Constantes para los distintos perfiles permitidos en la aplicación.
- * Inmutable y centralizado para uso en autenticación, guards y validaciones frontend.
+ * Role: Enum para los distintos perfiles permitidos en la aplicación.
+ * Centralizado para uso como tipo y valor en toda la app.
  */
-export const ROLES = Object.freeze({
-  DIRECCION: 'DIRECCION',
-  COMERCIAL: 'COMERCIAL',
-  ALMACEN: 'ALMACEN',
-  REPARTO: 'REPARTO',
-  ADMINISTRACION: 'ADMINISTRACION',
-});
+export enum Role {
+  DIRECCION = 'DIRECCION',
+  COMERCIAL = 'COMERCIAL',
+  ALMACEN = 'ALMACEN',
+  REPARTO = 'REPARTO',
+  ADMINISTRACION = 'ADMINISTRACION',
+}

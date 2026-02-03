@@ -33,4 +33,9 @@ export class SessionService {
     const user = this.getSession();
     return user ? user.role : null;
   }
+
+  // NUEVO: Retorna el usuario autenticado actual, o null
+  getUser(): User | null {
+    return this.getSession();
+  }
 }

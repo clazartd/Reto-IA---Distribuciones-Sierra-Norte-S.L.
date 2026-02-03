@@ -9,4 +9,17 @@
 
 ---
 
+## Navbar/Barra superior moderna estilo SaaS
+
+- **Regla:** La barra superior ocupa 100% del ancho, sin columnas laterales residuales.
+- **Zona usuario:** 
+  - Siempre en esquina superior derecha, mostrar icono de usuario/avatar.
+  - Dropdown contextual con info del usuario (nombre de usuario y rol).
+  - Botón logout como icono, no texto plano.
+- **NO:** No mostrar “Rol: ...” como texto flotante, ni botón salir directo.
+- **Racional:** Uniformidad, familiaridad UX y estética moderna.
+- **Extensión:** Todo el entorno autenticado usa el mismo patrón.
+
+---
+
 (Otros patrones previos conservados…)

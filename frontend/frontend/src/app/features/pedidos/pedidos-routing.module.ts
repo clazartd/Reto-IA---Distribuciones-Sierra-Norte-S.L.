@@ -2,9 +2,9 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from '../../core/guards/auth.guard';
 import { RoleGuard } from '../../core/guards/role.guard';
-import { ROLES } from '../../core/constants/roles.constants';
 import { NuevoPedidoComponent } from './pages/nuevo-pedido/nuevo-pedido.component';
 import { ListadoPedidosComponent } from './pages/listado-pedidos/listado-pedidos.component';
+import { Role } from '../../core/constants/roles.constants';
 
 const routes: Routes = [
   {
@@ -17,11 +17,11 @@ const routes: Routes = [
     canActivate: [AuthGuard, RoleGuard],
     data: {
       roles: [
-        ROLES.DIRECCION,
-        ROLES.COMERCIAL,
-        ROLES.ALMACEN,
-        ROLES.REPARTO,
-        ROLES.ADMINISTRACION,
+        Role.DIRECCION,
+        Role.COMERCIAL,
+        Role.ALMACEN,
+        Role.REPARTO,
+        Role.ADMINISTRACION,
       ]
     },
     component: ListadoPedidosComponent,
@@ -29,13 +29,13 @@ const routes: Routes = [
   {
     path: 'nuevo',
     canActivate: [AuthGuard, RoleGuard],
-    data: { roles: [ROLES.COMERCIAL] },
+    data: { roles: [Role.COMERCIAL] },
     component: NuevoPedidoComponent,
   },
   {
     path: 'preparacion',
     canActivate: [AuthGuard, RoleGuard],
-    data: { roles: [ROLES.ALMACEN] },
+    data: { roles: [Role.ALMACEN] },
     loadComponent: () =>
       import('./pages/preparacion-pedidos/preparacion-pedidos.component').then(m => m.PreparacionPedidosComponent)
   },

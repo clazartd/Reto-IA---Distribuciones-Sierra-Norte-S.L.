@@ -3,7 +3,7 @@ import { Observable, of } from 'rxjs';
 
 import { SessionService } from './session.service';
 import { User } from '../models/user.model';
-import { ROLES } from '../constants/roles.constants';
+import { Role } from '../constants/roles.constants';
 
 export interface Credentials {
   username: string;
@@ -23,9 +23,9 @@ export class AuthService {
   login(credentials: Credentials): Observable<User | null> {
     // Login siempre devuelve el usuario ALMACÉN para pruebas:
     const almacenUser: User = {
-      id: 3,
-      username: 'almacen',
-      role: ROLES.ALMACEN
+      id: "3",
+      username: 'almacenero',
+      role: Role.ALMACEN
     };
     return of(almacenUser);
   }

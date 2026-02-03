@@ -6,11 +6,11 @@ import { FormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { RouterModule } from '@angular/router';
 import { SessionService } from '../../../../core/services/session.service';
-import { ROLES } from '../../../../core/constants/roles.constants';
 import { NuevoPedidoComponent } from '../nuevo-pedido/nuevo-pedido.component';
 import { AgregarPedidoButtonComponent } from '../../../../shared/components/agregar-pedido/agregar-pedido-button.component';
 import { EditarPedidoComponent } from '../../../../shared/components/editar-pedido/editar-pedido.component';
 import { CancelPedidoModalComponent } from '../../../../shared/components/cancel-pedido/cancel-pedido-modal.component';
+import { Role } from '../../../../core/constants/roles.constants';
 
 @Component({
   standalone: true,
@@ -79,7 +79,7 @@ export class ListadoPedidosComponent implements OnInit {
   }
 
   get esComercial(): boolean {
-    return this.sessionService.getUserRole() === ROLES.COMERCIAL;
+    return this.sessionService.getUserRole() === Role.COMERCIAL;
   }
 
   abrirNuevoPedidoModal(): void {

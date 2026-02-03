@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router, UrlTree } from '@angular/router';
 import { SessionService } from '../services/session.service';
 import { Observable } from 'rxjs';
-import { ROLES } from '../constants/roles.constants';
+import { Role } from '../constants/roles.constants';
 
 /**
  * RoleGuard
@@ -51,15 +51,15 @@ export class RoleGuard implements CanActivate {
    */
   private getDefaultRouteForRole(role: string): string {
     switch (role) {
-      case ROLES.DIRECCION:
+      case Role.DIRECCION:
         return '/inicio';
-      case ROLES.COMERCIAL:
+      case Role.COMERCIAL:
         return '/inicio';
-      case ROLES.ALMACEN:
+      case Role.ALMACEN:
         return '/inicio';
-      case ROLES.REPARTO:
+      case Role.REPARTO:
         return '/inicio';
-      case ROLES.ADMINISTRACION:
+      case Role.ADMINISTRACION:
         return '/inicio';
       default:
         return '/login';

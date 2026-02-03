@@ -2,36 +2,30 @@
 
 ## Qué funciona
 
-- Menú contextual por rol (Pedidos > Preparación disponible solo para ALMACÉN).
-- Componentización y guards operando correctamente para cada pantalla de pedidos.
-- Listado de pedidos pendientes (registrados) para preparar visible sólo a ALMACÉN.
-- Servicio prepararPedido y feedback modal integrado.
+- UX homogénea entre pantallas de pedidos.
+- Filtros y layout unificados.
+- Menú contextual visible por rol, navegación protegida.
 
 ---
 
-## Flujo y UX de preparación de pedidos (ALMACÉN)
+## Feedback y mejoras pendientes
 
-### Flujo válido:
-- El usuario permanece siempre en pantalla "Preparación", nunca redirige tras preparar.
-- La lista se actualiza localmente, feedback en alert.
-
-### Mejoras UX detectadas (pendientes por feedback):
-
-- La pantalla debe tener exactamente los mismos estilos y estructura que "Listado de pedidos": layout, paddings, alerts, tabla, etc.
-- Falta sección de filtros: agregar búsqueda por cliente y fecha prevista (igual UX y layout que listado).
-- El bloque de filtros debe ir siempre arriba, con botón limpiar y lógica reactiva.
-- Feedback visual y estructura 1:1 con listado.
+- **Navbar:** debe ocupar todo el ancho, sin columnas laterales.
+- En zona superior derecha mostrar icono/avatar de usuario. 
+- Al pulsar, desplegar menú dropdown con info de usuario, rol (e.g. "almacen") y botón de logout (icon-based, no texto plano).
+- Elimina label "Rol: ..." y botón salir directos.
+- Task: Refactorizar componente de menú/navbar para alinearse a patrones de apps SaaS modernas.
 
 ---
 
-## Próximas acciones/corrección
+## Próximas acciones
 
-- [ ] Refactorizar preparacion-pedidos para usar los mismos estilos/homogeneidad visual.
-- [ ] Implementar bloque de filtros (cliente, fecha), copiar/refactorizar del listado, y aplicar a la lista de preparación.
-- [ ] Test de UX e integración tras ajuste.
-- [ ] Documentar patrón común en systemPatterns.md para futuras pantallas.
+- [ ] Refactor layout navbar y cabecera para uso total de ancho, user dropdown y logout icónico.
+- [ ] Revisar el patrón en systemPatterns.md (navbar único, UX moderna).
+- [ ] Validar experiencia responsive y usabilidad tras cambio.
 
 ---
 
 ### Estado general
-- Arquitectura sólida, foco en detalle UX y consistencia entre pantallas pedido.
+
+- Enfocado en refactor visual y mejora de experiencia de usuario ahora mismo.

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { SessionService } from '../../../../core/services/session.service';
 import { PedidosService } from '../../../../core/services/pedidos.service';
-import { ROLES } from '../../../../core/constants/roles.constants';
+import { Role } from '../../../../core/constants/roles.constants';
 import { AgregarPedidoButtonComponent } from '../../../../shared/components/agregar-pedido/agregar-pedido-button.component';
 import { NuevoPedidoComponent } from '../../../pedidos/pages/nuevo-pedido/nuevo-pedido.component';
 
@@ -40,11 +40,11 @@ export class DashboardComponent implements OnInit {
   @ViewChild('nuevoPedidoModal') nuevoPedidoModal!: NuevoPedidoComponent;
 
   // Controla el layout y accesos rápidos
-  get esComercial(): boolean { return this.usuario.rol === ROLES.COMERCIAL; }
-  get esAlmacen(): boolean { return this.usuario.rol === ROLES.ALMACEN; }
-  get esReparto(): boolean { return this.usuario.rol === ROLES.REPARTO; }
-  get esAdmin(): boolean { return this.usuario.rol === ROLES.ADMINISTRACION; }
-  get esDireccion(): boolean { return this.usuario.rol === ROLES.DIRECCION; }
+  get esComercial(): boolean { return this.usuario.rol === Role.COMERCIAL; }
+  get esAlmacen(): boolean { return this.usuario.rol === Role.ALMACEN; }
+  get esReparto(): boolean { return this.usuario.rol === Role.REPARTO; }
+  get esAdmin(): boolean { return this.usuario.rol === Role.ADMINISTRACION; }
+  get esDireccion(): boolean { return this.usuario.rol === Role.DIRECCION; }
 
   constructor(
     private sessionService: SessionService,
