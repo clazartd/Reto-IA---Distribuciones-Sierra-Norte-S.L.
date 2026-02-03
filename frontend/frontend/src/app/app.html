@@ -1,8 +1,31 @@
-<div class="container py-5">
-  <main class="row justify-content-center">
-    <div class="col-12 ">
-      <app-menu />
-      <router-outlet />
-    </div>
+<div class="dashboard-root d-flex min-vh-100">
+  <!-- SIDEBAR global -->
+  <nav class="sidebar bg-white border-end p-4 d-flex flex-column" style="min-width:220px;">
+    <h5 class="mb-4 text-muted fw-bold">Navigation</h5>
+    <ul class="nav flex-column fw-bold">
+      <li class="nav-item mb-1">
+        <a routerLink="/inicio" routerLinkActive="active" class="nav-link d-flex align-items-center"><span class="me-2">🏠</span>Dashboard</a>
+      </li>
+      <li class="nav-item mb-1">
+        <a routerLink="/pedidos" routerLinkActive="active" class="nav-link d-flex align-items-center"><span class="me-2">📦</span>Pedidos</a>
+      </li>
+      <li class="nav-item mb-1">
+        <a routerLink="/clientes" routerLinkActive="active" class="nav-link d-flex align-items-center"><span class="me-2">👤</span>Clientes</a>
+      </li>
+      <li class="nav-item mb-1">
+        <a routerLink="/productos" routerLinkActive="active" class="nav-link d-flex align-items-center"><span class="me-2">🛒</span>Productos</a>
+      </li>
+      <li class="nav-item mb-1">
+        <a routerLink="/rutas" routerLinkActive="active" class="nav-link d-flex align-items-center"><span class="me-2">🛣️</span>Rutas</a>
+      </li>
+      <li class="nav-item mb-1">
+        <a routerLink="/incidencias" routerLinkActive="active" class="nav-link d-flex align-items-center"><span class="me-2">ℹ️</span>Incidencias</a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- CONTENIDO principal: todas las vistas -->
+  <main class="flex-fill p-5" style="min-width:0;">
+    <router-outlet></router-outlet>
   </main>
 </div>

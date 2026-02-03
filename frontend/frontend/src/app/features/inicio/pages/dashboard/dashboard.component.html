@@ -1,107 +1,118 @@
-<div class="dashboard-container bg-white shadow rounded p-4" style="margin-top:32px;">
-  <!-- ENCABEZADO -->
-  <header class="mb-4">
-    <h2 class="fw-bold">Gestión de Pedidos – Distribuciones Sierra Norte</h2>
-  </header>
+<section>
+  <h2 class="fw-bold">Panel de Control</h2>
+  <div class="text-muted mb-4">
+    Bienvenido, {{ usuario.nombre }}. Resumen de la actividad del sistema.
+  </div>
+</section>
 
-  <!-- RESUMEN GLOBAL Y GRAFICOS (por estado) -->
-  <section class="mb-4">
-    <div class="row text-center">
-      <div class="col-6 col-md-2 mb-3" style="min-width: 120px;">
-        <div class="status-box status-registrados shadow">
-          <div class="status-count">{{ resumen.registrados }}</div>
-          <div class="status-label">Registrados</div>
-        </div>
+<!-- CARDS DE RESUMEN -->
+<section class="row g-3 mb-4">
+  <div class="col-12 col-sm-6 col-lg-3">
+    <div class="summary-card card h-100">
+      <div class="card-body">
+        <h6 class="card-title">Total Pedidos</h6>
+        <div class="display-5">{{ resumen.registrados + resumen.preparados + resumen.enReparto + resumen.entregados + resumen.cancelados }}</div>
+        <small class="text-muted">En el sistema</small>
       </div>
-      <div class="col-6 col-md-2 mb-3" style="min-width: 120px;">
-        <div class="status-box status-preparados shadow">
-          <div class="status-count">{{ resumen.preparados }}</div>
-          <div class="status-label">Preparados</div>
-        </div>
+    </div>
+  </div>
+  <div class="col-12 col-sm-6 col-lg-3">
+    <div class="summary-card card h-100">
+      <div class="card-body">
+        <h6 class="card-title">Pedidos Pendientes</h6>
+        <div class="display-5">{{ resumen.registrados }}</div>
+        <small class="text-muted">En proceso</small>
       </div>
-      <div class="col-6 col-md-2 mb-3" style="min-width: 120px;">
-        <div class="status-box status-enreparto shadow">
-          <div class="status-count">{{ resumen.enReparto }}</div>
-          <div class="status-label">En reparto</div>
-        </div>
+    </div>
+  </div>
+  <div class="col-12 col-sm-6 col-lg-3">
+    <div class="summary-card card h-100">
+      <div class="card-body">
+        <h6 class="card-title">Entregas Hoy</h6>
+        <div class="display-5">{{ resumen.entregados }}</div>
+        <small class="text-muted">Programadas</small>
       </div>
-      <div class="col-6 col-md-2 mb-3" style="min-width: 120px;">
-        <div class="status-box status-entregados shadow">
-          <div class="status-count">{{ resumen.entregados }}</div>
-          <div class="status-label">Entregados</div>
-        </div>
+    </div>
+  </div>
+  <div class="col-12 col-sm-6 col-lg-3">
+    <div class="summary-card card h-100">
+      <div class="card-body">
+        <h6 class="card-title">Incidencias Abiertas</h6>
+        <div class="display-5">0</div>
+        <small class="text-muted">Requieren atención</small>
       </div>
-      <div class="col-6 col-md-2 mb-3" style="min-width: 120px;">
-        <div class="status-box status-cancelados shadow">
-          <div class="status-count">{{ resumen.cancelados }}</div>
-          <div class="status-label">Cancelados</div>
+    </div>
+  </div>
+</section>
+
+<!-- DISTRIBUCIÓN POR ESTADO -->
+<section class="mb-4">
+  <div class="card">
+    <div class="card-body">
+      <h6 class="card-title mb-2">Distribución de Pedidos por Estado</h6>
+      <div class="text-muted mb-2">
+        Vista general del estado actual de todos los pedidos
+      </div>
+      <!-- Aquí podría ir una gráfica o tabla de distribución -->
+      <div class="text-center text-muted py-3">No hay datos disponibles</div>
+    </div>
+  </div>
+</section>
+
+<!-- ACCIONES RÁPIDAS (cards explicativas por rol) -->
+<section>
+  <div class="card mb-2">
+    <div class="card-body">
+      <h6 class="card-title mb-2">Acciones Rápidas</h6>
+      <div class="text-muted mb-3">Accede a las funciones principales del sistema</div>
+      <div class="row g-3">
+        <div class="col-12 col-md-3 d-flex">
+          <button class="btn btn-primary flex-fill" (click)="abrirNuevoPedidoModal()">Nuevo Pedido</button>
+        </div>
+        <div class="col-12 col-md-3 d-flex">
+          <a class="btn btn-outline-secondary flex-fill" routerLink="/pedidos/listado">Ver Pedidos</a>
+        </div>
+        <div class="col-12 col-md-3 d-flex">
+          <a class="btn btn-outline-secondary flex-fill" routerLink="/clientes">Gestionar Clientes</a>
+        </div>
+        <div class="col-12 col-md-3 d-flex">
+          <a class="btn btn-outline-secondary flex-fill" routerLink="/rutas">Planificar Rutas</a>
         </div>
       </div>
     </div>
-  </section>
+  </div>
+  <!-- Cards explicativas por rol (solo visible si el usuario tiene el rol correspondiente) -->
+  <div *ngIf="esComercial" class="card mt-3">
+    <div class="card-body">
+      <h6>Comercial</h6>
+      <p class="mb-0 text-muted">Puede registrar nuevos pedidos, ver sus pedidos y planificar rutas de entrega.</p>
+    </div>
+  </div>
+  <div *ngIf="esAlmacen" class="card mt-3">
+    <div class="card-body">
+      <h6>Almacén</h6>
+      <p class="mb-0 text-muted">Gestiona la preparación de pedidos y el inventario de productos.</p>
+    </div>
+  </div>
+  <div *ngIf="esReparto" class="card mt-3">
+    <div class="card-body">
+      <h6>Reparto</h6>
+      <p class="mb-0 text-muted">Accede a la lista de entregas asignadas y confirma las entregas realizadas.</p>
+    </div>
+  </div>
+  <div *ngIf="esAdmin" class="card mt-3">
+    <div class="card-body">
+      <h6>Administración</h6>
+      <p class="mb-0 text-muted">Puede consultar todo el histórico de pedidos y gestionar incidencias.</p>
+    </div>
+  </div>
+  <div *ngIf="esDireccion" class="card mt-3">
+    <div class="card-body">
+      <h6>Dirección</h6>
+      <p class="mb-0 text-muted">Dispone de visión global para toma de decisiones y acceso a informes históricos.</p>
+    </div>
+  </div>
+</section>
 
-  @if (loading) {
-    <div class="alert alert-info">Cargando información del sistema...</div>
-  }
-
-  <!-- BLOQUES DE ACCIONES Y AVISOS POR ROL -->
-  <section class="mt-4">
-
-    @if (esComercial) {
-      <div class="dashboard-block mb-3">
-        <app-agregar-pedido-button (agregarPedido)="abrirNuevoPedidoModal()"></app-agregar-pedido-button>
-        <a class="btn btn-primary" [routerLink]="['/pedidos/listado']">Ver pedidos registrados</a>
-        @if (resumen.registrados > 0) {
-          <div class="alert alert-warning mt-3">
-            Tienes {{ resumen.registrados }} pedidos pendientes de preparación.
-          </div>
-        }
-      </div>
-    }
-
-    @if (esAlmacen) {
-      <div class="dashboard-block mb-3">
-        <a class="btn btn-primary" [routerLink]="['/pedidos/preparacion']">Preparar pedidos</a>
-        @if (resumen.registrados > 0) {
-          <div class="alert alert-danger mt-3">
-            Hay {{ resumen.registrados }} pedidos registrados pendientes de preparación.
-          </div>
-        }
-      </div>
-    }
-
-    @if (esReparto) {
-      <div class="dashboard-block mb-3">
-        <a class="btn btn-info" [routerLink]="['/pedidos/listado']">Confirmar entregas</a>
-        @if (resumen.enReparto > 0) {
-          <div class="alert alert-warning mt-3">
-            Tienes {{ resumen.enReparto }} pedidos en reparto pendientes de entrega.
-          </div>
-        }
-      </div>
-    }
-
-    @if (esAdmin) {
-      <div class="dashboard-block mb-3">
-        <a class="btn btn-primary" [routerLink]="['/pedidos/listado']">Consultar pedidos</a>
-        <a class="btn btn-outline-secondary" [routerLink]="['/pedidos/listado']">Ver histórico</a>
-        <div class="alert alert-info mt-3">
-          Acceso orientado a consultas y soporte del sistema.
-        </div>
-      </div>
-    }
-
-    @if (esDireccion) {
-      <div class="dashboard-block mb-3">
-        <a class="btn btn-primary" [routerLink]="['/pedidos/listado']">Consultar pedidos</a>
-        <a class="btn btn-outline-secondary" [routerLink]="['/pedidos/listado']">Histórico</a>
-        <div class="alert alert-info mt-3">
-          Visión global del estado de pedidos. Accesos de consulta e histórico.
-        </div>
-      </div>
-    }
-
-  </section>
-
-  <app-nuevo-pedido #nuevoPedidoModal (closed)="nuevoPedidoModalClosed()"></app-nuevo-pedido>
-</div>
+<!-- MODAL NUEVO PEDIDO -->
+<app-nuevo-pedido #nuevoPedidoModal (closed)="nuevoPedidoModalClosed()"></app-nuevo-pedido>
