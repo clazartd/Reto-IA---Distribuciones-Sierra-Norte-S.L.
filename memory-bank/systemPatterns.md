@@ -4,34 +4,68 @@
 
 [...patrones de frontend pedidos...]
 
-## Backend (Express + Node.js, API RESTful)
+## Backend (Express + Node.js, API RESTful, PostgreSQL)
 
-- Toda la API funcionará bajo Node.js + Express (v5.2.1).
-- El backend se organiza siguiendo estructura modular bajo `backend/` (rutas, controladores, middlewares, etc).
-- Primera ruta implementada para health-check: `GET /api/health` (o `/api/ping`) responde status 200/json para probar la conexión desde frontend y detectar fallos operativos básicos.
-- Futuras rutas cubrirán CRUD entidades y autenticación/JWT de ser necesario.
+- API en Node.js + Express (v5.2.1)
+- Arquitectura estrictamente modular:  
+  - `routes/` → definición de endpoints
+  - `controllers/` → gestión de request/response
+  - `services/` → lógica de negocio
+  - `models/` (o `repositories/`) → acceso a la base de datos/postgres
+  - `config/` → conexión, pool y parámetros de PostgreSQL
+- **NUNCA** lógica en rutas, ni acceso directo a DB fuera de services/models.
 
-### Patrón inicial
+### Flujo obligatorio: login
 
-```js
-// backend/index.js
-const express = require('express');
-const app = express();
-const PORT = process.env.PORT || 3001;
+- **POST /auth/login**  
+- Recibe: `{ username, password }`  
+- Comprueba en DB:
+  - Que existen ambos campos
+  - Busca usuario (tabla `usuarios`)
+  - Compara password (simple, bcrypt no especificado)
+  - Si OK: devuelve `{ user: { id, username, role } }`
+  - Si NO: `{ user: null, message: 'Usuario o contraseña incorrectos' }`
+- El service encapsula la lógica, controller sólo orquesta.
 
-app.get('/api/health', (req, res) => {
-  res.status(200).json({ status: 'ok', ts: Date.now() });
-});
+### Modelo usuario (DB)
 
-app.listen(PORT, () => {
-  console.log('API ready on port', PORT);
-});
+Tabla `usuarios` (PostgreSQL):
+
+| id (varchar, PK) | username (varchar) | password (varchar, seguro) | role (varchar, valores válidos) |
+|---|---|---|---|
+| ... | ... | ... | DIRECCION/COMERCIAL/ALMACEN/REPARTO/ADMINISTRACION |
+
+- Roles estrictamente los definidos en análisis funcional; sin ampliaciones.
+
+### Validación (protocolo obligado)
+
+- Ningún password viaja al Frontend ni se expone.
+- El backend audita el acceso y responde en menos de 2s (regla de calidad).
+
+### Esqueleto de carpetas
+
+```
+backend/src/
+├── app.js
+├── server.js
+│
+├── routes/
+│   └── auth.routes.js
+│
+├── controllers/
+│   └── auth.controller.js
+│
+├── services/
+│   └── auth.service.js
+│
+├── models/
+│   └── user.model.js
+│
+├── config/
+│   └── db.config.js
 ```
 
-- El health-check (`/api/health`) es fundamental para integración CI/CD y troubleshooting.
-- Todo error al levantar el servicio debe mostrarse por consola y responder 500 si hay internal error.
+### Detalles extra
 
-## Consistencia
-
-- El health-check y logging deben estar presentes en todas las ramas, ambientes y despliegues.
-- La respuesta JSON debe ser simple y estable para testeo automatizado y por frontend.
+- El health-check sigue activo (`/api/health`) para debugging y CI.
+- Toda futura entidad/domino debe seguir este patrón.

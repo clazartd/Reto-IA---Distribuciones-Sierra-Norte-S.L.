@@ -2,18 +2,20 @@
 
 ## Foco actual
 
-- Transición a desarrollo backend con Express (v5.2.1) + Node.js.
-- Documentado health-check `/api/health` como primer endpoint; permite verificar la conectividad backend antes de avanzar a features reales.
-- El backend se arranca desde `backend/index.js`; guideline, troubleshooting y comandos en techContext.md.
-- El health-check es requisito (must pass) previo a comenzar entidades y features del dominio (pedidos-productos-clientes).
+- Comienza implementación backend funcional, primera prioridad: LOGIN de usuarios con arquitectura Express 5 + PostgreSQL.
+- Seguir fielmente estructura modular: routes → controllers → services → models → config.
+- Toda validación de usuario (login) recae en backend, consultando PostgreSQL (tabla usuarios), incluyendo control de roles.
+- La respuesta para login exitoso/fallido es estricta según las specs del análisis funcional.
+- El health-check en `/api/health` sigue activo para debugging, pero el flujo de login es el foco absoluto.
 
 ## Próximos pasos
 
-- Implementar inicio de server y endpoint health-check.
-- Probar respuesta con curl, Postman o fetch desde frontend.
-- Monitorear cualquier error de arranque (dependencias, versión Node, puerto ocupado...).
-- Una vez verificado, proceder a scaffolding modular de rutas, controladores y modelos dominio backend.
+- Scaffold estructural de carpetas y archivos backend/src conforme a guidelines.
+- Implementar config de db con pooling y variables entorno.
+- Proceder: endpoint POST `/auth/login`, testearlo manual/postman.
+- Una vez estable, añadir endpoint/flujo de registro de usuarios.
 
-## Decisiones clave
+## Decisión clave
 
-- Se prioriza fiabilidad del arranque Express y logging de errores como base para despliegues seguros.
+- Modularidad estricta y desacoplo: la lógica NUNCA en rutas, ni queries crudas desde controladores.
+- Cumplir con el modelo de usuario/roles y formato de respuesta pactado.

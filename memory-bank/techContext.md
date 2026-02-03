@@ -4,39 +4,46 @@
 
 [... detalles previos ...]
 
-## Backend: Express + Node.js
+## Backend: Express + Node.js + PostgreSQL
 
-- Node.js >= 18 recomendado (por soporte LTS y features modernos).
-- Framework: **Express** v5.2.1.
-- Entry-point principal: `backend/index.js` (convención).
-- Dependencias gestionadas vía `backend/package.json`; instalar con `npm install` en la carpeta correspondiente.
-
-### Setup y comando de arranque
+- Node.js >= 18, Express 5.2.1.
+- **Base de datos**: PostgreSQL 17.7-2
+- Conexión gestionada desde `backend/src/config/db.config.js` (con pool y variables entorno).
+- Estructura modular, ver systemPatterns.md para detalles.
+- Comandos para setup:
 
 ```bash
 cd backend
 npm install
-node index.js
+# Edita config/db.config.js con host, db, user, password
+node src/server.js
 ```
-- El servidor quedará escuchando en el puerto 3001 (o establecer PORT env variable).
 
-### Prueba inicial
+### Esquema usuario/roles
 
-- Probar GET [http://localhost:3001/api/health](http://localhost:3001/api/health)
-- Respuesta esperada (200 OK):
+- Tabla `usuarios`:
+  - id: varchar (PK)
+  - username: varchar
+  - password: varchar (hash o plano según seguridad/prototipo)
+  - role: varchar (de lista controlada: DIRECCION, COMERCIAL, ALMACEN, REPARTO, ADMINISTRACION)
 
-  ```json
-  {
-    "status": "ok",
-    "ts": 1706971112067
-  }
-  ```
+### Detalles de conexión/resiliencia
 
-### Notas técnicas
+- Usar algún pool para PostgreSQL; las conexiones deben ser recicladas (Pool de pg/promesas).
+- Si hay error de conexión, el backend DEBE abortar launch y loggear claramente el error.
+- No almacenar contraseñas en logs ni retornarlas jamás al frontend.
+- Mapeo de errores y respuesta json uniforme en todo el API.
 
-- La primera release solo expone el health-check.
-- Si el puerto está ocupado, cambiar el valor o liberar el puerto.
-- Ante cualquier error de boot, revisar: dependencias, versiones, variables entorno, logs de consola.
-- El health-check es el 'ping' de desarrollo y debe pasar antes de arrancar features reales.
+### Security & env
 
-[... detalles adicionales de frontend ...]
+- Guardar las credenciales en .env o variables de entorno.
+- Proteger las rutas para que no sea posible acceso no autenticado a los endpoints de dominio en el futuro.
+
+### Testear login
+
+- Endpoint: POST `/auth/login`
+- Body: `{ username: "...", password: "..." }`
+- Si OK: retorna `{ user: { id, username, role } }`
+- Si falla: `{ user: null, message: "Usuario o contraseña incorrectos" }`
+
+[... notas frontend ...]

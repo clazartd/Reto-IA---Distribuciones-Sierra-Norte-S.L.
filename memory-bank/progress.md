@@ -2,24 +2,25 @@
 
 ## Cambios recientes
 
-- Iniciada la fase de backend: 
-  - Stack: Node.js + Express (v5.2.1)
-  - Primera implementación: health-check en `/api/health` documentado y preparado.
-  - Estructura base, guidelines y troubleshooting añadidas a systemPatterns.md y techContext.md.
-  - Foco en logging exhaustivo y robustez de arranque antes de escalar API.
+- Completado milestone 1: health-check backend Express operativo y validado.
+- Alineada arquitectura backend según reglas de modularidad (routes, controllers, services, models, config).
+- Aprobado primer paso de transición: lista y estructura de roles, campos usuario y formato de respuesta para login.
+- Documentados patrones, estándares de respuesta y de seguridad mínima en systemPatterns.md y techContext.md.
 
 ## Estado actual
 
-- Documentación y comandos claros para que cualquier ingeniero pueda levantar y comprobar el backend.
-- El milestone "health-check responde 200 OK" es blocking para continuar nuevas features.
-- El siguiente paso es la integración progresiva de rutas, siguiendo buenas prácticas modulares.
+- El backend puede levantarse y responde en `/api/health`.
+- Nueva fase activa: implementación de login (validación credenciales contra PostgreSQL, control de roles, respuesta estricta).
+- No hay lógica de negocio fuera de los servicios/controllers; rutas desacopladas, modelos y configuración aislada.
+- Cualquier reingreso al proyecto puede entender y proseguir la implementación/modificación de endpoints desde el scaffold actualizado.
 
 ## Siguientes pasos
 
-- Implementar index.js con Express + endpoint `/api/health`.
-- Verificar respuesta exitosa manualmente/curl/Postman.
-- Si todo funciona, diseñar skeleton de rutas/handlers para dominio (pedidos-productos-clientes).
+- Scaffold de backend/src y primeros archivos (auth.routes.js, auth.controller.js, auth.service.js, user.model.js, db.config.js).
+- Desarrollar flujo POST `/auth/login` desde ruta hasta servicio, hasta devolver respuesta estructurada.
+- Test del endpoint manualmente (Postman), debug de errores y ajustes de conexión/queries según sea necesario.
+- Planificación siguiente milestone: registro de usuarios.
 
 ## Decisión clave
 
-- Se inicia por health-check para eliminar dudas de setup, networking y dependencias antes de añadir lógica de dominio o seguridad.
+- La robustez modular y la validación centralizada sientan base para seguridad y mantenibilidad extendida.

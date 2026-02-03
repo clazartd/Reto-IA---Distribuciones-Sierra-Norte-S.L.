@@ -1,8 +1,12 @@
-// Backend Express API v5.2.1 - Health Check básico
+require('dotenv').config();
 
 const express = require('express');
+const authRouter = require('./src/routes/auth.routes.js');
 const app = express();
 const PORT = process.env.PORT || 3001;
+
+app.use(express.json());
+app.use('/auth', authRouter);
 
 app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'ok', ts: Date.now() });
