@@ -2,26 +2,24 @@
 
 ## Cambios recientes
 
-- Refactorización mayor de Pedido:
-  - Añadidos y documentados los nuevos campos (`numeroPedido`, `clienteId`, `productos`, `fechaSolicitud`, `estado`, `urgente`, `total`)
-  - `estado` implementado como enum fuerte y referenciado en toda la lógica frontend (filtrado, tabla, UI).
-  - Todos los mocks y la tabla visual se han ampliado al nuevo modelo de datos.
-  - Eliminada variable legacy `estadosUnicos` y cualquier string suelto para estados.
-  - Filtro de estado basado en Object.values(Estado) (`EstadoKeys`).
-- Documentados patrones y convenciones en systemPatterns.md, techContext.md, y el foco en activeContext.md.
+- Iniciada la fase de backend: 
+  - Stack: Node.js + Express (v5.2.1)
+  - Primera implementación: health-check en `/api/health` documentado y preparado.
+  - Estructura base, guidelines y troubleshooting añadidas a systemPatterns.md y techContext.md.
+  - Foco en logging exhaustivo y robustez de arranque antes de escalar API.
 
 ## Estado actual
 
-- El listado de pedidos en frontend se ajusta completamente al nuevo modelo.
-- El filtro, la visualización y la estructura de código son extensibles y robustos.
-- La documentación técnica y de proyecto está alineada y completa.
+- Documentación y comandos claros para que cualquier ingeniero pueda levantar y comprobar el backend.
+- El milestone "health-check responde 200 OK" es blocking para continuar nuevas features.
+- El siguiente paso es la integración progresiva de rutas, siguiendo buenas prácticas modulares.
 
 ## Siguientes pasos
 
-- Propagar el modelo extendido al resto del frontend, validar formularios y detalles.
-- Definir mapeos/mocks intermedios para consumir datos reales del backend cuando esté disponible.
-- Monitorizar cualquier salto de requisitos sobre los campos del modelo Pedido y reflejarlo instantáneamente en la documentación central.
+- Implementar index.js con Express + endpoint `/api/health`.
+- Verificar respuesta exitosa manualmente/curl/Postman.
+- Si todo funciona, diseñar skeleton de rutas/handlers para dominio (pedidos-productos-clientes).
 
 ## Decisión clave
 
-- El uso de enums y tipado estricto mejora la mantenibilidad, la robustez y la comprensión colectiva del sistema.
+- Se inicia por health-check para eliminar dudas de setup, networking y dependencias antes de añadir lógica de dominio o seguridad.

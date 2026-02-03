@@ -2,38 +2,36 @@
 
 ## Dominio y Modelos Compartidos
 
-- **Pedido**
-  - `id: number`
-  - `numeroPedido: string`
-  - `clienteId: string`
-  - `productos: Producto[]`
-  - `fechaSolicitud: Date`
-  - `fechaPrevistaEntrega: Date`
-  - `estado: Estado`  // Enum fuerte: 'registrado' | 'en preparación' | 'en reparto' | 'entregado' | 'cancelado'
-  - `urgente: boolean`
-  - `motivoCancelacion?: string`
-  - `total: number`
+[...patrones de frontend pedidos...]
 
-- **Enum Estado**  
-  ```ts
-  export enum Estado {
-    REGISTRADO = 'registrado',
-    PREPARACION = 'en preparación',
-    REPARTO = 'en reparto',
-    ENTREGADO = 'entregado',
-    CANCELADO = 'cancelado'
-  }
-  ```
+## Backend (Express + Node.js, API RESTful)
 
-## Relación y convenciones
+- Toda la API funcionará bajo Node.js + Express (v5.2.1).
+- El backend se organiza siguiendo estructura modular bajo `backend/` (rutas, controladores, middlewares, etc).
+- Primera ruta implementada para health-check: `GET /api/health` (o `/api/ping`) responde status 200/json para probar la conexión desde frontend y detectar fallos operativos básicos.
+- Futuras rutas cubrirán CRUD entidades y autenticación/JWT de ser necesario.
 
-- Los pedidos deben almacenar referencia lógica a cliente/usuario mediante `clienteId`, el detalle visual puede ser resuelto por join con la entidad Cliente.
-- El valor total se maneja como decimal/float JS (`number`), siempre calculado como suma de líneas de productos en ese pedido.
-- La única fuente de verdad de "estado" es el enum Estado, nunca un string literal suelto ni un array plano.
-- El filtrado por estado y la visualización siempre deben derivarse de EstadoKeys o recorrido de Object.values(Estado).
+### Patrón inicial
 
-## Nota de Consistencia
+```js
+// backend/index.js
+const express = require('express');
+const app = express();
+const PORT = process.env.PORT || 3001;
 
-- Todas las visiones, formularios, pipes y lógicas deben actualizarse para usar la nueva interfaz.
-- Eliminar uso de "estadosUnicos" u otros patrones legacy donde existieran, y basarse en el enum.
-- Cualquier evolución posterior debe extender Estado solo aquí y en el modelo.
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ status: 'ok', ts: Date.now() });
+});
+
+app.listen(PORT, () => {
+  console.log('API ready on port', PORT);
+});
+```
+
+- El health-check (`/api/health`) es fundamental para integración CI/CD y troubleshooting.
+- Todo error al levantar el servicio debe mostrarse por consola y responder 500 si hay internal error.
+
+## Consistencia
+
+- El health-check y logging deben estar presentes en todas las ramas, ambientes y despliegues.
+- La respuesta JSON debe ser simple y estable para testeo automatizado y por frontend.
