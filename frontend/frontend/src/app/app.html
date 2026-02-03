@@ -1,21 +1,35 @@
 <div class="dashboard-root d-flex min-vh-100">
-  <nav class="sidebar bg-white border-end p-4 d-flex flex-column" style="min-width:220px;">
-    <h5 class="mb-4 text-muted fw-bold">Navigation</h5>
-    <ul class="nav flex-column fw-bold">
-      <li class="nav-item mb-1">
-        <a routerLink="/inicio" routerLinkActive="active" class="nav-link d-flex align-items-center"><span class="me-2">🏠</span>Dashboard</a>
-      </li>
-      <li class="nav-item mb-1">
-        <a routerLink="/pedidos" routerLinkActive="active" class="nav-link d-flex align-items-center"><span class="me-2">📦</span>Pedidos</a>
-      </li>
-      <li class="nav-item mb-1">
-        <a routerLink="/clientes" routerLinkActive="active" class="nav-link d-flex align-items-center"><span class="me-2">👤</span>Clientes</a>
-      </li>
-      <li class="nav-item mb-1">
-        <a routerLink="/productos" routerLinkActive="active" class="nav-link d-flex align-items-center"><span class="me-2">🛒</span>Productos</a>
-      </li>
-    </ul>
-  </nav>
+  @if (user) {
+    <nav class="sidebar bg-white border-end p-4 d-flex flex-column h-100" style="min-width:220px;">
+      <h5 class="mb-4 text-muted fw-bold">Navigation</h5>
+      <ul class="nav flex-column fw-bold">
+        <li class="nav-item mb-1">
+          <a routerLink="/inicio" routerLinkActive="active" class="nav-link d-flex align-items-center"><span class="me-2">🏠</span>Dashboard</a>
+        </li>
+        <li class="nav-item mb-1">
+          <a routerLink="/pedidos" routerLinkActive="active" class="nav-link d-flex align-items-center"><span class="me-2">📦</span>Pedidos</a>
+        </li>
+        <li class="nav-item mb-1">
+          <a routerLink="/clientes" routerLinkActive="active" class="nav-link d-flex align-items-center"><span class="me-2">👤</span>Clientes</a>
+        </li>
+        <li class="nav-item mb-1">
+          <a routerLink="/productos" routerLinkActive="active" class="nav-link d-flex align-items-center"><span class="me-2">🛒</span>Productos</a>
+        </li>
+      </ul>
+
+      <!-- Bloque inferior: usuario/rol y logout -->
+      <div class="mt-auto pt-4 border-top">
+        <div class="d-flex flex-column align-items-start">
+          @if (role) {
+            <span class="text-muted mb-2">Rol: {{ role }}</span>
+          }
+          <button class="btn btn-danger btn-sm d-flex align-items-center" (click)="logout()">
+            <span class="me-2">🚪</span> Cerrar sesión
+          </button>
+        </div>
+      </div>
+    </nav>
+  }
 
   <!-- CONTENIDO principal: todas las vistas -->
   <main class="flex-fill p-5" style="min-width:0;">

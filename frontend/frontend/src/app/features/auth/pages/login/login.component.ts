@@ -21,22 +21,16 @@ export class LoginComponent {
   loginError: string | null = null;
   isSubmitting = false;
 
-  // Credenciales por defecto para desarrollo/demo (eliminar cuando se conecte API)
-  private readonly defaultDevUser = {
-    username: 'comercial',
-    password: '1234'
-  };
-
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
     private sessionService: SessionService,
     private router: Router
   ) {
-    // Inicializa el formulario con usuario y contraseña por defecto
+    // Inicializa el formulario vacío
     this.loginForm = this.fb.group({
-      username: [this.defaultDevUser.username, Validators.required],
-      password: [this.defaultDevUser.password, Validators.required]
+      username: ['', Validators.required],
+      password: ['', Validators.required]
     });
   }
 

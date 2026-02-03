@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
 import { SessionService } from './session.service';
 import { User } from '../models/user.model';
@@ -18,16 +21,31 @@ export interface Credentials {
   providedIn: 'root'
 })
 export class AuthService {
-  constructor(private sessionService: SessionService) {}
+  private apiUrl = `${environment.apiUrl}/auth`;
+
+  constructor(
+    private sessionService: SessionService,
+    private http: HttpClient
+  ) {}
 
   login(credentials: Credentials): Observable<User | null> {
-    // Login siempre devuelve el usuario ALMACÉN para pruebas:
-    const almacenUser: User = {
-      id: "3",
-      username: 'almacenero',
-      role: Role.ALMACEN
-    };
-    return of(almacenUser);
+    return this.http.post<{ user: User | null; message?: string }>(
+      `${this.apiUrl}/login`,
+      credentials
+    ).pipe(
+      map(response => response.user || null),
+      catchError(() => of(null))
+    );
+  }
+
+  register(data: {username: string, password: string, role: string}): Observable<User | null> {
+    return this.http.post<{ user: User | null; message?: string }>(
+      `${this.apiUrl}/register`,
+      data
+    ).pipe(
+      map(response => response.user || null),
+      catchError(() => of(null))
+    );
   }
 
   logout(): void {
