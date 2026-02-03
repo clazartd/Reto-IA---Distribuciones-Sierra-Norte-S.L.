@@ -1,26 +1,36 @@
 # Product Context
 
 ## Why This Project Exists
-El proyecto nace para digitalizar y optimizar la gestión de pedidos y el seguimiento interno en Distribuciones Sierra Norte S.L., reemplazando métodos manuales y dispersos por una solución centralizada accesible a todo el equipo.
+El proyecto nace para digitalizar y optimizar la gestión de pedidos **y ahora también la gestión de clientes y productos** en Distribuciones Sierra Norte S.L., reemplazando métodos manuales y dispersos por una solución centralizada accesible a todo el equipo.
 
 ## Problems Addressed
 - Dependencia de hojas de cálculo y comunicación informal, propensas a errores y falta de visibilidad.
-- Pérdida de tiempo y eficiencia en la gestión manual de pedidos y repartos.
-- Falta de trazabilidad y seguimiento estructurado de los pedidos.
+- Pérdida de tiempo y eficiencia en la gestión manual de pedidos, clientes **y productos**.
+- Dificultad para asociar pedidos a clientes o productos de forma segura y sin duplicidad.
+- Falta de catálogo de productos centralizado y controlado, permitiendo actualmente alta/edición desestructurada o ad-hoc.
+- Trazabilidad y seguimiento estructurado limitado para productos (stock, catálogo, referencias).
 - Dificultad de uso para usuarios con bajo conocimiento tecnológico.
+
+### Gestión de Productos: contexto particular
+- Antes de este módulo, los productos se agregaban manualmente al registrar o editar pedidos, propiciando errores y falta de catálogo consistente.
+- No había control granular de qué roles pueden crear, editar, borrar o solo consultar productos.
+- Usuarios necesitaban una manera rápida de consultar el catálogo sin posibilidad de modificar registros no autorizados.
 
 ## User Experience Goals
 - Experiencia clara y sumamente intuitiva, orientada a usuarios no técnicos.
-- Interfaz visual simple, comprensible y enfocada en los procesos principales (alta de pedido, seguimiento, edición, listado).
-- Feedback visual inmediato en validaciones y acciones.
-- Reducción de pasos y opciones para evitar confusión.
-- Navegación fluida y consistente en todas las vistas.
+- Interfaz visual simple, comprensible y enfocada en los procesos principales de negocio (gestión de pedidos, clientes y productos).
+- Gestión de productos: listado tipo catálogo, alta/edición ultra simple, acciones claras según permisos, y selección de productos unificada en pedidos.
+- Feedback inmediato y leyendas de permisos claros por rol (lectura/edición).
+- Navegación fluida: los catálogos se consultan rápidamente y las acciones CRUD solo están expuestas a los roles permitidos.
+- Selector de producto en el formulario de pedidos solo muestra productos existentes, evitando entradas manuales.
 
 ## Operational Context
-- Uso diario por el equipo de gestión y reparto de la empresa.
-- El sistema centraliza los pedidos internos y permite su seguimiento desde la creación hasta la entrega.
-- Se empleará desde dispositivos de sobremesa en oficinas, aunque también puede requerirse acceso desde móviles/tabletas en el futuro. 
-- Inicialmente, el sistema funcionará en entorno de pruebas/simulaciones hasta la integración con backend.
+- Uso diario por el equipo comercial, administración y otros roles con permisos definidos.
+- Permite asociar pedidos a productos existentes controlados; elimina la entrada manual/libre de productos en pedidos.
+- Listado y alta/edición/eliminación de productos accesible solo a los roles/usuarios permitidos; otros pueden consultar, pero no editar/borrar.
+- Mejor trazabilidad y control; reducción del trabajo manual y errores administrativos.
+- Accesible tanto desde oficina como dispositivos móviles, aunque la prioridad es entorno escritorio.
+- El módulo de productos está integrado visual y funcionalmente con el resto de la aplicación.
 
 ---
 

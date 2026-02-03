@@ -1,0 +1,85 @@
+<div class="productos-header d-flex align-items-center justify-content-between mb-4">
+  <h1 class="display-5 fw-bold mb-0">Catálogo de Productos</h1>
+  <button *ngIf="puedeEditar" type="button" class="btn btn-primary d-flex align-items-center px-3" (click)="abrirModalCrear()">
+    <span class="fs-5">+</span>&nbsp;Nuevo Producto
+  </button>
+</div>
+
+<div class="productos-box productos-filtros bg-white rounded-4 shadow-sm border p-4 mb-4">
+  <form class="row g-3 align-items-center flex-nowrap">
+    <div class="col flex-grow-1">
+      <input type="search" [(ngModel)]="busqueda" name="busqueda" class="form-control" placeholder="&#128269; Buscar por nombre o descripción..." autocomplete="off">
+    </div>
+    <div class="col-auto">
+      <select class="form-select" [(ngModel)]="filtroEstado" name="filtroEstado" style="min-width:110px;">
+        <option value="">Todos</option>
+        <option value="true">Disponible</option>
+        <option value="false">No disponible</option>
+      </select>
+    </div>
+  </form>
+  <div class="text-muted mt-1 ms-1" style="font-size:.97em;">
+    Mostrando {{ productosFiltrados.length }} de {{ productos.length }} productos
+  </div>
+</div>
+
+<div class="productos-box bg-white rounded-4 shadow-sm border p-4">
+  <div class="fw-bold fs-5 mb-3">Listado de Productos</div>
+  <div class="table-responsive">
+    <table class="table mb-0 align-middle">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Descripción</th>
+          <th>Unidad</th>
+          <th>Precio Ref.</th>
+          <th>Estado</th>
+          <th class="text-end" *ngIf="puedeEditar">Acciones</th>
+        </tr>
+      </thead>
+      <tbody *ngIf="productosFiltrados.length; else sinProductos">
+        <tr *ngFor="let p of productosFiltrados">
+          <td>{{ p.nombre }}</td>
+          <td>{{ p.descripcion || '-' }}</td>
+          <td>{{ p.unidadMedida }}</td>
+          <td>
+            <span *ngIf="p.precioReferencia; else guion">{{ p.precioReferencia }} €</span>
+            <ng-template #guion>-</ng-template>
+          </td>
+          <td>
+            <span class="badge rounded-pill"
+                  [ngClass]="p.disponible ? 'bg-success-subtle text-success fw-semibold px-3' : 'bg-secondary-subtle text-dark'">
+              {{ p.disponible ? 'Disponible' : 'No disponible' }}
+            </span>
+          </td>
+          <td class="text-end" *ngIf="puedeEditar">
+            <button (click)="abrirModalEditar(p)" title="Editar" type="button" class="btn p-1 me-1"><span class="fa fa-pen"></span></button>
+            <button (click)="abrirModalEliminar(p)" title="Eliminar" type="button" class="btn p-1 text-danger"><span class="fa fa-trash"></span></button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <ng-template #sinProductos>
+      <tr>
+        <td colspan="6" class="text-center text-muted py-5">
+          No hay productos para mostrar.
+        </td>
+      </tr>
+    </ng-template>
+  </div>
+</div>
+
+<!-- MODALES REUTILIZABLES (editar/crear y eliminar) -->
+<app-editar-producto-modal
+  [isOpen]="modalEditarAbierto"
+  [producto]="productoEnEdicion"
+  (save)="onGuardarProducto($event)"
+  (cancel)="cerrarModalEditar()">
+</app-editar-producto-modal>
+
+<app-confirmar-eliminar-modal
+  [isOpen]="modalEliminarAbierto"
+  [entityName]="productoAEliminar?.nombre || ''"
+  (confirm)="onConfirmarEliminar()"
+  (cancel)="cerrarModalEliminar()">
+</app-confirmar-eliminar-modal>

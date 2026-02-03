@@ -1,17 +1,47 @@
 # Project Brief
 
 ## Purpose
-_Describe the core purpose and intent of this project. Start here at project initialization._
+Digitalizar, centralizar y optimizar la gestión de pedidos y clientes en Distribuciones Sierra Norte S.L., eliminando trabajos manuales y ofreciendo trazabilidad, eficiencia y acceso controlado.
 
 ## Goals
-- _List core objectives and end-goals for the project._
-- _Update as requirements evolve._
+- Acceso seguro a paneles y listados según reglas de negocio y rol.
+- Gestión unificada de pedidos (registro, consulta, edición, distribución, supervisión).
+- **Gestión de Clientes:** listado, alta, edición y consulta de información de clientes, integración con módulo de pedidos.
+- Permisos personalizados por rol sobre gestión de clientes: comercial/administración/dirección (edición), almacén/reparto (solo lectura).
+- Experiencia visual clara y sencilla para usuarios no técnicos.
+- Separación estricta de lógica, presentación y acceso.
+
+## Gestión de Productos (Nuevo módulo)
+- **Módulo independiente y lazy‑loaded**
+- Listado, alta, edición y eliminación básica de productos
+- Solo pueden crear/editar/eliminar productos: Comercial, Administración, Dirección, Almacén
+- Reparto solo puede ver el catálogo/listado
+- Selector de productos unificado: seleccionar productos desde el formulario de pedidos consultando el catálogo; no hay entrada manual/texto libre
+- Servicio centralizado (ProductosService) con métodos mínimos: getProductos, getProductoById, createProducto, updateProducto
+- Interfaz Producto (modelo): id: string, nombre, descripcion, unidadMedida, precioReferencia, disponible, createdAt
+- Acciones permitidas y visibles dependen del rol
+- Integrado con registro y edición de pedidos
 
 ## Scope
-_What is included (and what is not) in this project? Summarize any boundaries here._
+Incluye:
+- Pedido: todo su ciclo, con filtros y dashboards de seguimiento.
+- Cliente: listado completo, alta, edición, consulta detalle, acceso e integración con pedidos.
+- Producto: catálogo, alta/edición/eliminación simple, selección desde pedidos, integración total con pedidos.
+- Control de roles/autenticación (mocked; sin backend real inicial).
+- Layout visual basado en SaaS moderno (sidebar global, navbar, feedback de acceso).
+- Arquitectura modular Angular, todos los módulos funcionales lazy-loaded.
+- **Relación pedidos-clientes:** pedidos solo permiten vincular a clientes existentes registrados.
+No incluye:
+- Histórico completo de cambios de clientes.
+- Gestión avanzada de historiales/auditoría.
+- Validación de negocio compleja o específica de backend.
 
 ## Key Stakeholders
-- _List of people, teams, or roles involved (if any)._
+- Dirección general
+- Equipo Comercial
+- Administración
+- Almacén
+- Reparto
 
 ---
 

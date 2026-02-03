@@ -2,26 +2,44 @@
 
 ## Últimos cambios implementados
 
-- Homogeneización visual "Preparación de pedidos" = "Listado de pedidos" + filtro UX alineado.
-- Feedback: navbar requiere cambio de presentación: ocupar todo el ancho y usar dropdown de usuario en vez de texto plano de rol.
-- Task pendiente: refactor navbar/layout conforme UX guidelines modernas.
+- Layout global (sidebar, navbar) actualizado para vista moderna, experiencia full-width y navegación lateral consistente en todas las pantallas.
+- Eliminación definitiva del antiguo menu-component y refactor de dashboard para respetar layout actual.
+- Migración a patrones SaaS modernos (navbar ancho total, user dropdown).
+- Eliminado preparacion-pedidos: Acciones de preparación y edición unificadas bajo listado-pedidos según rol.
 
 ---
 
-## Nuevo requerimiento de Navbar:
+## NUEVO: Funcionalidad Gestión de Productos
 
-- El navbar debe ocupar 100% del ancho de pantalla (no layout en columna).
-- En vez de mostrar "Rol: ..." y botón de salir lineal:
-  - Mostrar icono usuario/avatar (derecha, visible always).
-  - Al hacer click: dropdown que indica usuario y rol activo, y muestra botón logout (con símbolo, no texto plano).
-- El patrón será obligatorio para toda la experiencia autenticada.
+- Definida la estructura para el módulo productos (feature lazy-loaded, paths, archivos core).
+- Requisitos y restricciones de roles aprobados:
+  - Comercial, Administración, Dirección, Almacén pueden crear, editar, borrar y ver productos.
+  - Reparto: solo puede consultar.
+- Interface Producto actualizada (`id: string`) y documentada. Servicios mínimos definidos: getProductos, getProductoById, createProducto, updateProducto.
+- Formulario de registro/edición de pedidos ya debe consumir ProductService como selector (evita entrada manual).
+- Scaffold de archivos:
+  - productos.module.ts
+  - productos-routing.module.ts
+  - pages/listado-productos/
+  - pages/nuevo-producto/
+  - pages/editar-producto/
+- Columna de acciones visible solo según permisos; UX consistente con clientes/pedidos.
+- Servicio ProductosService planificado, centralizará comunicación con backend.
 
 ---
 
-## Siguientes pasos
+## Funcionalidad Gestión de Clientes
 
-- Refactor del componente de navbar/menu para arquitectura a ancho completo.
-- Rediseño de área sesión, adoption de iconos y dropdown.
-- Alinear experiencia a apps SaaS/admin modernas.
+- Módulo independiente, permisos activos según rol, integración con selector de clientes en pedidos.
+- Mock data de clientes visible, buscador/filtrado avanzado, acciones condicionadas por permisos.
+
+---
+
+**Siguientes pasos:**
+- Scaffold y codificación del módulo productos.
+- Implementar ProductService, integración CRUD real.
+- Integración total de selector de productos en formulario de pedidos.
+- Test y validación UX+roles.
+- Actualizar documentación técnica y evolutiva conforme avance la implementación.
 
 ---

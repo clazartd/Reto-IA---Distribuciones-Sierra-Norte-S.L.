@@ -19,5 +19,13 @@ export const routes: Routes = [
     path: 'pedidos',
     loadChildren: () => import('./features/pedidos/pedidos.module').then(m => m.PedidosModule),
   },
+  {
+    path: 'clientes',
+    loadChildren: () => import('./features/clientes/clientes.module').then(m => m.ClientesModule),
+  },
+  {
+    path: 'productos',
+    loadChildren: () => import('./features/productos/productos.module').then(m => m.ProductosModule),
+  },
   { path: '**', redirectTo: 'login' }
 ];
