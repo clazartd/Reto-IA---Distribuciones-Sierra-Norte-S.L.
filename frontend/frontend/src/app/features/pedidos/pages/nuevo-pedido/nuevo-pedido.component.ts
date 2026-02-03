@@ -2,7 +2,8 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { PedidosService } from '../../../../core/services/pedidos.service';
-import { Pedido } from '../../../../core/models/pedido.model';
+import { Pedido, Estado } from '../../../../core/models/pedido.model';
+import { Producto } from '../../../../core/models/producto.model';
 
 @Component({
   standalone: true,
@@ -22,13 +23,13 @@ export class NuevoPedidoComponent {
 
   constructor(private fb: FormBuilder, private pedidosService: PedidosService) {
     this.pedidoForm = this.fb.group({
-      cliente: ['', Validators.required],
+      clienteId: ['', Validators.required], // Cambiado a clienteId
       productos: this.fb.array([this.createProductoGroup()]), // Al menos un producto
       fechaEntrega: ['', Validators.required],
+      urgente: [false]
     });
   }
 
-  // For external use: eg, let modal open be controlled from parent via ViewChild
   open() {
     this.showModal = true;
   }
@@ -68,13 +69,19 @@ export class NuevoPedidoComponent {
     }
 
     this.isSubmitting = true;
+    // Simulación de cálculo de total (puede mejorarse conectando con los productos reales)
+    const total = 0;
 
     const pedido: Pedido = {
-      id: 0, // Valor temporal, el backend debería asignar el id real
-      cliente: this.pedidoForm.value.cliente,
-      productos: this.pedidoForm.value.productos as any,
+      id: 0,
+      numeroPedido: '', // El backend debe asignar luego
+      clienteId: this.pedidoForm.value.clienteId,
+      productos: this.pedidoForm.value.productos as Producto[], // Puede necesitar mapeo real según backend/data
+      fechaSolicitud: new Date(),
       fechaPrevistaEntrega: this.pedidoForm.value.fechaEntrega,
-      estado: 'pendiente' // Estado inicial
+      estado: Estado.REGISTRADO,
+      urgente: this.pedidoForm.value.urgente ?? false,
+      total
     };
 
     this.pedidosService.createPedido(pedido).subscribe({

@@ -33,7 +33,7 @@ export class EditarPedidoComponent {
     this.editable = editable;
     this.editForm.reset();
     this.editForm.patchValue({
-      cliente: pedido.cliente,
+      cliente: pedido.clienteId,
       fechaEntrega: pedido.fechaPrevistaEntrega,
       estado: pedido.estado
     });
@@ -79,7 +79,7 @@ export class EditarPedidoComponent {
     if (!this.editForm.valid || !this.pedido || !this.editable) return;
     const updated: Pedido = {
       ...this.pedido,
-      cliente: this.editForm.value.cliente,
+      clienteId: this.editForm.value.clienteId,
       productos: this.editForm.value.productos,
       fechaPrevistaEntrega: this.editForm.value.fechaEntrega,
       estado: this.editForm.value.estado

@@ -25,6 +25,33 @@ export class ProductosService {
       disponible: true,
       createdAt: new Date(),
     },
+    {
+      id: '3',
+      nombre: 'Aceite de Oliva Virgen',
+      descripcion: 'Garrafa 5L extracción en frío',
+      unidadMedida: 'garrafa',
+      precioReferencia: '28.00',
+      disponible: true,
+      createdAt: new Date(),
+    },
+    {
+      id: '4',
+      nombre: 'Jamón Ibérico',
+      descripcion: 'Pieza entera aprox. 7kg',
+      unidadMedida: 'pieza',
+      precioReferencia: '110.50',
+      disponible: false,
+      createdAt: new Date(),
+    },
+    {
+      id: '5',
+      nombre: 'Queso Manchego',
+      descripcion: 'Cuña 500g maduración reserva',
+      unidadMedida: 'pieza',
+      precioReferencia: '9.45',
+      disponible: true,
+      createdAt: new Date(),
+    }
   ];
 
   getProductos(): Observable<Producto[]> {

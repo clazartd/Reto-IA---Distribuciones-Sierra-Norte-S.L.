@@ -1,22 +1,53 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { Pedido } from '../models/pedido.model';
-
-// Resumen utilizado en dashboard
-export interface PedidosResumen {
-  registrados: number;
-  preparados: number;
-  enReparto: number;
-  entregados: number;
-  cancelados: number;
-}
+import { Pedido, Estado } from '../models/pedido.model';
+import { Producto } from '../models/producto.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PedidosService {
-  private readonly API_URL = '/api/pedidos'; // Ajustar si es necesario
+  private readonly API_URL = '/api/pedidos';
+
+  private productosMock: Producto[] = [
+    {
+      id: '1',
+      nombre: 'Cerveza Artesanal',
+      descripcion: 'Pack 6x33cl de IPA artesanal',
+      unidadMedida: 'caja',
+      precioReferencia: '14.99',
+      disponible: true,
+      createdAt: new Date(),
+    },
+    {
+      id: '2',
+      nombre: 'Agua Mineral',
+      descripcion: 'Botella 1.5L',
+      unidadMedida: 'unidad',
+      precioReferencia: '0.70',
+      disponible: true,
+      createdAt: new Date(),
+    },
+    {
+      id: '3',
+      nombre: 'Aceite de Oliva Virgen',
+      descripcion: 'Garrafa 5L extracción en frío',
+      unidadMedida: 'garrafa',
+      precioReferencia: '28.00',
+      disponible: true,
+      createdAt: new Date(),
+    },
+    {
+      id: '4',
+      nombre: 'Jamón Ibérico',
+      descripcion: 'Pieza entera aprox. 7kg',
+      unidadMedida: 'pieza',
+      precioReferencia: '110.50',
+      disponible: false,
+      createdAt: new Date(),
+    }
+  ];
 
   constructor(private http: HttpClient) {}
 
@@ -24,57 +55,41 @@ export class PedidosService {
     return this.http.post(this.API_URL, pedido);
   }
 
-  // TODO: Reemplazar con llamada real al backend cuando esté disponible
   getPedidos(): Observable<Pedido[]> {
-    // return this.http.get<Pedido[]>(this.API_URL);
     return of([
       {
         id: 1,
-        cliente: 'Pepe Gómez',
-        productos: [
-          { producto: 'Manzanas', cantidad: 5 },
-          { producto: 'Peras', cantidad: 3 }
-        ],
-        fechaPrevistaEntrega: '2026-02-12',
-        estado: 'registrado'
+        numeroPedido: 'N-202601-0001',
+        clienteId: 'C-01',
+        productos: [this.productosMock[0], this.productosMock[1]],
+        fechaSolicitud: new Date('2026-02-10'),
+        fechaPrevistaEntrega: new Date('2026-02-12'),
+        estado: Estado.REGISTRADO,
+        urgente: false,
+        total: 15.69
       },
       {
         id: 2,
-        cliente: 'María Pérez',
-        productos: [
-          { producto: 'Plátanos', cantidad: 4 }
-        ],
-        fechaPrevistaEntrega: '2026-02-14',
-        estado: 'preparado'
+        numeroPedido: 'N-202601-0002',
+        clienteId: 'C-02',
+        productos: [this.productosMock[2]],
+        fechaSolicitud: new Date('2026-02-11'),
+        fechaPrevistaEntrega: new Date('2026-02-14'),
+        estado: Estado.PREPARACION,
+        urgente: true,
+        total: 28.00
       },
       {
         id: 3,
-        cliente: 'Juan Ruiz',
-        productos: [
-          { producto: 'Naranjas', cantidad: 7 },
-          { producto: 'Manzanas', cantidad: 2 }
-        ],
-        fechaPrevistaEntrega: '2026-02-13',
-        estado: 'enReparto'
-      },
-      {
-        id: 4,
-        cliente: 'Lucía Torres',
-        productos: [
-          { producto: 'Peras', cantidad: 6 }
-        ],
-        fechaPrevistaEntrega: '2026-02-13',
-        estado: 'entregado'
-      },
-      {
-        id: 5,
-        cliente: 'Carlos González',
-        productos: [
-          { producto: 'Manzanas', cantidad: 10 }
-        ],
-        fechaPrevistaEntrega: '2026-02-15',
-        estado: 'cancelado',
-        motivoCancelacion: 'Cliente lo solicitó'
+        numeroPedido: 'N-202601-0003',
+        clienteId: 'C-03',
+        productos: [this.productosMock[3]],
+        fechaSolicitud: new Date('2026-02-09'),
+        fechaPrevistaEntrega: new Date('2026-02-19'),
+        estado: Estado.CANCELADO,
+        urgente: false,
+        motivoCancelacion: 'Cliente lo solicitó',
+        total: 110.50
       }
     ]);
   }
@@ -89,17 +104,5 @@ export class PedidosService {
 
   prepararPedido(id: number): Observable<any> {
     return this.http.put(`${this.API_URL}/${id}/preparar`, {});
-  }
-
-  // Mock para dashboard
-  getPedidosResumen(): Observable<PedidosResumen> {
-    // TODO: reemplazar esta lógica por una integración real en producción
-    return of({
-      registrados: 5,
-      preparados: 2,
-      enReparto: 3,
-      entregados: 20,
-      cancelados: 1
-    });
   }
 }

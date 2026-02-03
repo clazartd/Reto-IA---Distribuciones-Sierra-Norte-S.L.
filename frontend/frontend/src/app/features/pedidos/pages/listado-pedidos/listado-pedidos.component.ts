@@ -1,132 +1,114 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PedidosService } from '../../../../core/services/pedidos.service';
-import { Pedido } from '../../../../core/models/pedido.model';
 import { FormsModule } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { RouterModule } from '@angular/router';
 import { SessionService } from '../../../../core/services/session.service';
-import { NuevoPedidoComponent } from '../nuevo-pedido/nuevo-pedido.component';
-import { AgregarPedidoButtonComponent } from '../../../../shared/components/agregar-pedido/agregar-pedido-button.component';
-import { EditarPedidoComponent } from '../../../../shared/components/editar-pedido/editar-pedido.component';
-import { CancelPedidoModalComponent } from '../../../../shared/components/cancel-pedido/cancel-pedido-modal.component';
+import { User } from '../../../../core/models/user.model';
 import { Role } from '../../../../core/constants/roles.constants';
+import { Pedido, Estado } from '../../../../core/models/pedido.model';
 
 @Component({
-  standalone: true,
   selector: 'app-listado-pedidos',
-  templateUrl: './listado-pedidos.component.html',
-  styleUrls: ['./listado-pedidos.component.scss'],
+  standalone: true,
   imports: [
     CommonModule,
     FormsModule,
-    RouterModule,
-    NuevoPedidoComponent,
-    AgregarPedidoButtonComponent,
-    EditarPedidoComponent,
-    CancelPedidoModalComponent
   ],
+  templateUrl: './listado-pedidos.component.html',
+  styleUrls: ['./listado-pedidos.component.scss']
 })
-export class ListadoPedidosComponent implements OnInit {
-  pedidos: Pedido[] = [];
-  filteredPedidos: Pedido[] = [];
-  filtroEstado: string = '';
+export class ListadoPedidosComponent {
+  user: User | null = null;
+
+  filtroEstado: Estado | '' = '';
   filtroFecha: string = '';
-  estadosUnicos: string[] = [];
 
-  loading = true;
-  error: string | null = null;
+  pedidos: Pedido[] = [
+    {
+      id: 1,
+      numeroPedido: 'N-202601-0001',
+      clienteId: 'C-01',
+      productos: [],
+      fechaSolicitud: new Date('2026-02-10'),
+      fechaPrevistaEntrega: new Date('2026-02-12'),
+      estado: Estado.REGISTRADO,
+      urgente: false,
+      total: 32.5
+    },
+    {
+      id: 2,
+      numeroPedido: 'N-202601-0002',
+      clienteId: 'C-02',
+      productos: [],
+      fechaSolicitud: new Date('2026-02-11'),
+      fechaPrevistaEntrega: new Date('2026-02-14'),
+      estado: Estado.PREPARACION,
+      urgente: true,
+      total: 19
+    },
+    {
+      id: 3,
+      numeroPedido: 'N-202601-0003',
+      clienteId: 'C-03',
+      productos: [],
+      fechaSolicitud: new Date('2026-02-09'),
+      fechaPrevistaEntrega: new Date('2026-02-19'),
+      estado: Estado.CANCELADO,
+      urgente: false,
+      motivoCancelacion: 'Cliente lo solicitó',
+      total: 0
+    }
+  ];
 
-  @ViewChild('nuevoPedidoModal') nuevoPedidoModal!: NuevoPedidoComponent;
-  @ViewChild('editarPedidoModal') editarPedidoModal!: EditarPedidoComponent;
-
+  filteredPedidos: Pedido[] = [];
+  loading = false;
+  error = '';
+  showCancelConfirm = false;
   selectedPedidoToEdit: Pedido | null = null;
   selectedPedidoToCancel: Pedido | null = null;
-  showCancelConfirm = false;
-  motivoCancelacion: string = '';
 
-  constructor(
-    private pedidosService: PedidosService,
-    private sessionService: SessionService
-  ) {}
+  constructor(private sessionService: SessionService) {}
 
-  ngOnInit(): void {
-    this.fetchPedidos();
+  ngOnInit() {
+    this.user = this.sessionService.getSession();
+    this.filtrar();
   }
 
-  fetchPedidos(): void {
-    this.loading = true;
-    this.error = null;
-    this.pedidosService.getPedidos().subscribe({
-      next: (data) => {
-        this.pedidos = data;
-        this.estadosUnicos = Array.from(new Set(data.map(p => p.estado)));
-        this.filtrar();
-        this.loading = false;
-      },
-      error: () => {
-        this.error = 'No se pudieron cargar los pedidos';
-        this.loading = false;
-      }
-    });
+  get puedeCrearPedido(): boolean {
+    return !!this.user && [
+      Role.DIRECCION,
+      Role.COMERCIAL,
+      Role.ADMINISTRACION
+    ].includes(this.user.role);
   }
 
-  filtrar(): void {
+  get puedeEditarPedido(): boolean {
+    return !!this.user && [
+      Role.DIRECCION,
+      Role.COMERCIAL,
+      Role.ADMINISTRACION
+    ].includes(this.user.role);
+  }
+
+  filtrar() {
     this.filteredPedidos = this.pedidos.filter(p =>
-      (!this.filtroEstado || p.estado === this.filtroEstado) &&
-      (!this.filtroFecha || p.fechaPrevistaEntrega === this.filtroFecha)
+      (this.filtroEstado === '' || p.estado === this.filtroEstado) &&
+      (this.filtroFecha === '' || this.formatFecha(p.fechaPrevistaEntrega) === this.filtroFecha)
     );
   }
 
-  get esComercial(): boolean {
-    return this.sessionService.getUserRole() === Role.COMERCIAL;
+  private formatFecha(fecha: Date): string {
+    return fecha.toISOString().split('T')[0];
   }
 
-  abrirNuevoPedidoModal(): void {
-    this.nuevoPedidoModal.open();
-  }
+  abrirNuevoPedidoModal() {}
+  abrirEditarPedidoModal(pedido: Pedido) { this.selectedPedidoToEdit = pedido; }
+  abrirCancelarPedidoConfirm(pedido: Pedido) { this.selectedPedidoToCancel = pedido; this.showCancelConfirm = true; }
+  confirmarCancelarPedido() { this.showCancelConfirm = false; }
+  cancelarCancelarPedido() { this.selectedPedidoToCancel = null; this.showCancelConfirm = false; }
+  nuevoPedidoModalClosed() {}
+  onPedidoEdit(pedido: Pedido) { this.selectedPedidoToEdit = null; }
 
-  abrirEditarPedidoModal(pedido: Pedido): void {
-    this.selectedPedidoToEdit = pedido;
-    setTimeout(() => this.editarPedidoModal.open(pedido), 0);
+  get EstadoKeys(): string[] {
+    return Object.values(Estado);
   }
-
-  onPedidoEdit(updatedPedido: Pedido): void {
-    this.pedidosService.updatePedido(updatedPedido.id, updatedPedido).subscribe(() => {
-      const idx = this.pedidos.findIndex(p => p.id === updatedPedido.id);
-      if (idx !== -1) {
-        this.pedidos[idx] = { ...updatedPedido };
-        this.filtrar();
-      }
-    });
-  }
-
-  abrirCancelarPedidoConfirm(pedido: Pedido): void {
-    this.selectedPedidoToCancel = pedido;
-    this.motivoCancelacion = '';
-    this.showCancelConfirm = true;
-  }
-
-  confirmarCancelarPedido(motivo: string): void {
-    if (!this.selectedPedidoToCancel || !motivo) return;
-    this.pedidosService.cancelPedido(this.selectedPedidoToCancel.id, motivo).subscribe(() => {
-      const idx = this.pedidos.findIndex(p => p.id === this.selectedPedidoToCancel!.id);
-      if (idx !== -1) {
-        this.pedidos[idx] = { ...this.pedidos[idx], estado: 'cancelado', motivoCancelacion: motivo };
-        this.filtrar();
-        this.selectedPedidoToCancel = null;
-        this.motivoCancelacion = '';
-        this.showCancelConfirm = false;
-      }
-    });
-  }
-
-  cancelarCancelarPedido(): void {
-    this.selectedPedidoToCancel = null;
-    this.motivoCancelacion = '';
-    this.showCancelConfirm = false;
-  }
-
-  // Optionally, handle the (closed) output event if needed
-  nuevoPedidoModalClosed(): void {}
 }

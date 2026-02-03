@@ -53,8 +53,20 @@
             </span>
           </td>
           <td class="text-end" *ngIf="puedeEditar">
-            <button (click)="abrirModalEditar(p)" title="Editar" type="button" class="btn p-1 me-1"><span class="fa fa-pen"></span></button>
-            <button (click)="abrirModalEliminar(p)" title="Eliminar" type="button" class="btn p-1 text-danger"><span class="fa fa-trash"></span></button>
+            <button (click)="abrirModalEditar(p)" type="button" class="btn p-0 me-3" title="Editar" style="vertical-align: middle;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#343A40" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 17.25V21h3.75l11.06-11.06-3.75-3.75L3 17.25z"/>
+                <path d="M20.71 7.04a1.003 1.003 0 0 0 0-1.41l-2.34-2.34a1.003 1.003 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.83z"/>
+              </svg>
+            </button>
+            <button (click)="abrirModalEliminar(p)" type="button" class="btn p-0" title="Eliminar" style="vertical-align: middle;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#e3342f" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M7 18c0 .55.45 1 1 1h8c.55 0 1-.45 1-1V7H7v11z"/>
+                <path d="M9 9.5v3.5M11 9.5v3.5"/>
+                <path d="M3 6.5h18"/>
+                <path d="M8 6.5V5.5A1.5 1.5 0 0 1 9.5 4h5A1.5 1.5 0 0 1 16 5.5v1"/>
+              </svg>
+            </button>
           </td>
         </tr>
       </tbody>

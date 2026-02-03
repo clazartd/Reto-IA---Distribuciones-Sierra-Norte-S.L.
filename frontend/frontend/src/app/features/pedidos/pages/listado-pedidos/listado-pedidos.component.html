@@ -1,95 +1,98 @@
-<div class="bg-white rounded shadow p-4">
-  <h2 class="mb-4">Listado de pedidos</h2>
+<div class="pedidos-header d-flex align-items-center justify-content-between mb-4">
+  <h1 class="display-5 fw-bold mb-0">Gestión de Pedidos</h1>
+  <button *ngIf="puedeCrearPedido" type="button" class="btn btn-primary d-flex align-items-center px-3" (click)="abrirNuevoPedidoModal()">
+    <span class="fs-5">+</span>&nbsp;Nuevo Pedido
+  </button>
+</div>
 
-  @if (esComercial) {
-    <div class="mb-3">
-      <app-agregar-pedido-button (agregarPedido)="abrirNuevoPedidoModal()"></app-agregar-pedido-button>
-    </div>
-  }
-
-  <form class="row g-3 mb-3" (ngSubmit)="filtrar()">
-    <div class="col-md-4">
-      <label class="form-label">Estado</label>
+<div class="pedidos-box pedidos-filtros bg-white rounded-4 shadow-sm border p-4 mb-4">
+  <form class="row g-3 align-items-center flex-nowrap" (ngSubmit)="filtrar()">
+    <div class="col mb-2">
+      <label class="form-label mb-1 fw-semibold">Estado</label>
       <select class="form-select" [(ngModel)]="filtroEstado" name="estado" (change)="filtrar()">
         <option value="">Todos</option>
-        @for (estado of estadosUnicos; track estado) {
-          <option [ngValue]="estado">{{ estado }}</option>
-        }
+        <option *ngFor="let est of EstadoKeys" [ngValue]="est">{{ est }}</option>
       </select>
     </div>
-    <div class="col-md-4">
-      <label class="form-label">Fecha prevista</label>
+    <div class="col mb-2">
+      <label class="form-label mb-1 fw-semibold">Fecha prevista</label>
       <input type="date" class="form-control" [(ngModel)]="filtroFecha" name="fechaEntrega" (change)="filtrar()" />
     </div>
-    <div class="col-md-4 d-flex align-items-end">
-      <button type="button" class="btn btn-outline-secondary me-2" (click)="filtroEstado=''; filtroFecha=''; filtrar()">
+    <div class="col-auto align-self-end">
+      <button type="button" class="btn btn-outline-secondary" (click)="filtroEstado=''; filtroFecha=''; filtrar()">
         Limpiar filtros
       </button>
     </div>
   </form>
+  <div class="text-muted mt-1 ms-1" style="font-size:.97em;">
+      Mostrando {{ filteredPedidos.length }} pedidos
+  </div>
+</div>
 
-  <app-nuevo-pedido #nuevoPedidoModal (closed)="nuevoPedidoModalClosed()"></app-nuevo-pedido>
-  <app-editar-pedido #editarPedidoModal (saved)="onPedidoEdit($event)" (closed)="selectedPedidoToEdit=null"></app-editar-pedido>
-
-  <app-cancel-pedido-modal
-    [show]="showCancelConfirm"
-    [pedido]="selectedPedidoToCancel"
-    (confirmed)="confirmarCancelarPedido($event)"
-    (cancelled)="cancelarCancelarPedido()"
-  ></app-cancel-pedido-modal>
-
-  @if (loading) {
-    <div class="alert alert-info">Cargando pedidos...</div>
-  }
-  @if (error) {
-    <div class="alert alert-danger">{{ error }}</div>
-  }
-  @if (!loading && !error && filteredPedidos.length === 0) {
-    <div class="alert alert-warning">No hay pedidos coincidentes.</div>
-  }
-
-  @if (!loading && !error && filteredPedidos.length > 0) {
-    <div class="table-responsive">
-      <table class="table table-bordered align-middle">
-        <thead class="table-light">
-          <tr>
-            <th>ID</th>
-            <th>Cliente</th>
-            <th>Estado</th>
-            <th>Fecha prevista</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (pedido of filteredPedidos; track pedido.id) {
-            <tr>
-              <td>{{ pedido.id }}</td>
-              <td>{{ pedido.cliente }}</td>
-              <td>
-                <span [class]="pedido.estado === 'cancelado' ? 'text-danger' : pedido.estado === 'registrado' ? 'text-primary' : 'text-success'">
-                  {{ pedido.estado }}
-                </span>
-              </td>
-              <td>{{ pedido.fechaPrevistaEntrega }}</td>
-              <td>
-                <button class="btn btn-sm btn-outline-primary me-2" type="button" (click)="abrirEditarPedidoModal(pedido)" aria-label="Editar">
-                  <i class="bi bi-pencil" aria-hidden="true"></i>
-                </button>
-                @if (pedido.estado !== 'cancelado') {
-                  <button
-                    class="btn btn-sm btn-outline-danger"
-                    type="button"
-                    (click)="abrirCancelarPedidoConfirm(pedido)"
-                    aria-label="Cancelar"
-                  >
-                    <i class="bi bi-x-circle" aria-hidden="true"></i>
-                  </button>
-                }
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
-  }
+<div class="pedidos-box bg-white rounded-4 shadow-sm border p-4">
+  <div class="fw-bold fs-5 mb-3">Listado de Pedidos</div>
+  <div *ngIf="loading" class="alert alert-info">Cargando pedidos...</div>
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+  <div *ngIf="!loading && !error && filteredPedidos.length === 0" class="alert alert-warning">
+    No hay pedidos coincidentes.
+  </div>
+  <div class="table-responsive" *ngIf="!loading && !error && filteredPedidos.length > 0">
+    <table class="table align-middle mb-0">
+      <thead>
+        <tr>
+          <th>Número Pedido</th>
+          <th>Cliente</th>
+          <th>Urgente</th>
+          <th>Estado</th>
+          <th>Fecha solicitud</th>
+          <th>Fecha prevista</th>
+          <th>Total (€)</th>
+          <th class="text-end" *ngIf="puedeEditarPedido">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let pedido of filteredPedidos">
+          <td>{{ pedido.numeroPedido }}</td>
+          <td>{{ pedido.clienteId }}</td>
+          <td>
+            <span class="badge"
+              [ngClass]="pedido.urgente ? 'bg-danger text-white' : 'bg-secondary text-dark'">
+              {{ pedido.urgente ? 'Urgente' : 'Normal' }}
+            </span>
+          </td>
+          <td>
+            <span
+              class="badge"
+              [ngClass]="{
+                'bg-primary text-white': pedido.estado === 'registrado',
+                'bg-warning text-dark': pedido.estado === 'en preparación',
+                'bg-info text-dark': pedido.estado === 'en reparto',
+                'bg-success text-white': pedido.estado === 'entregado',
+                'bg-danger text-white': pedido.estado === 'cancelado'
+              }"
+            >{{ pedido.estado }}</span>
+          </td>
+          <td>{{ pedido.fechaSolicitud | date:'yyyy-MM-dd' }}</td>
+          <td>{{ pedido.fechaPrevistaEntrega | date:'yyyy-MM-dd' }}</td>
+          <td>{{ pedido.total | number:'1.2-2' }}</td>
+          <td class="text-end" *ngIf="puedeEditarPedido">
+            <button class="btn p-0 me-3" type="button" title="Editar" (click)="abrirEditarPedidoModal(pedido)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#343A40" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 17.25V21h3.75l11.06-11.06-3.75-3.75L3 17.25z"/>
+                <path d="M20.71 7.04a1.003 1.003 0 0 0 0-1.41l-2.34-2.34a1.003 1.003 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.83z"/>
+              </svg>
+            </button>
+            <button *ngIf="pedido.estado !== 'cancelado'" class="btn p-0" type="button" title="Cancelar pedido" (click)="abrirCancelarPedidoConfirm(pedido)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#e3342f" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M7 18c0 .55.45 1 1 1h8c.55 0 1-.45 1-1V7H7v11z"/>
+                <path d="M9 9.5v3.5M11 9.5v3.5"/>
+                <path d="M3 6.5h18"/>
+                <path d="M8 6.5V5.5A1.5 1.5 0 0 1 9.5 4h5A1.5 1.5 0 0 1 16 5.5v1"/>
+              </svg>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>

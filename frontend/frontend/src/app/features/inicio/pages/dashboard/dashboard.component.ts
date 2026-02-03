@@ -6,18 +6,11 @@ import { PedidosService } from '../../../../core/services/pedidos.service';
 import { Role } from '../../../../core/constants/roles.constants';
 import { AgregarPedidoButtonComponent } from '../../../../shared/components/agregar-pedido/agregar-pedido-button.component';
 import { NuevoPedidoComponent } from '../../../pedidos/pages/nuevo-pedido/nuevo-pedido.component';
+import { Pedido, Estado } from '../../../../core/models/pedido.model';
 
 interface UsuarioDashboard {
   nombre: string;
   rol: string;
-}
-
-interface PedidosResumen {
-  registrados: number;
-  preparados: number;
-  enReparto: number;
-  entregados: number;
-  cancelados: number;
 }
 
 @Component({
@@ -34,12 +27,17 @@ interface PedidosResumen {
 })
 export class DashboardComponent implements OnInit {
   usuario: UsuarioDashboard = { nombre: '', rol: '' };
-  resumen: PedidosResumen = { registrados: 0, preparados: 0, enReparto: 0, entregados: 0, cancelados: 0 };
+  resumen = {
+    registrados: 0,
+    preparados: 0,
+    enReparto: 0,
+    entregados: 0,
+    cancelados: 0
+  };
   loading = true;
 
   @ViewChild('nuevoPedidoModal') nuevoPedidoModal!: NuevoPedidoComponent;
 
-  // Controla el layout y accesos rápidos
   get esComercial(): boolean { return this.usuario.rol === Role.COMERCIAL; }
   get esAlmacen(): boolean { return this.usuario.rol === Role.ALMACEN; }
   get esReparto(): boolean { return this.usuario.rol === Role.REPARTO; }
@@ -61,9 +59,15 @@ export class DashboardComponent implements OnInit {
 
   fetchResumen() {
     this.loading = true;
-    this.pedidosService.getPedidosResumen().subscribe({
-      next: (data) => {
-        this.resumen = data;
+    this.pedidosService.getPedidos().subscribe({
+      next: (pedidos) => {
+        this.resumen = {
+          registrados: pedidos.filter(p => p.estado === Estado.REGISTRADO).length,
+          preparados: pedidos.filter(p => p.estado === Estado.PREPARACION).length,
+          enReparto: pedidos.filter(p => p.estado === Estado.REPARTO).length,
+          entregados: pedidos.filter(p => p.estado === Estado.ENTREGADO).length,
+          cancelados: pedidos.filter(p => p.estado === Estado.CANCELADO).length
+        };
         this.loading = false;
       },
       error: () => {
@@ -77,6 +81,5 @@ export class DashboardComponent implements OnInit {
     this.nuevoPedidoModal.open();
   }
 
-  // Optionally, handle the (closed) output event if needed
   nuevoPedidoModalClosed(): void {}
 }
