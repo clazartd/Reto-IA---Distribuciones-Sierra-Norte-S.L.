@@ -10,7 +10,7 @@
 
 - 📋 <b><a href="docs/pdf/AnálisisFuncionalyRequisitos.pdf">Análisis de requisitos</a></b>
 - 👤 <b><a href="docs/pdf/HistoriasUsuario.pdf">Historias de usuario</a></b>
-- 🛠️ <b><a href="./disenio-tecnico.md">Diseño técnico y propuesta tecnológica</a></b>
+- 🛠️ <b><a href="docs/pdf/PropuestaTec.pdf">Diseño técnico y propuesta tecnológica</a></b>
 
 ---
 
@@ -33,10 +33,14 @@
 </p>
 
 <p align="center">
-  <b>Pedidos / Detalle Pedido</b><br>
+  <b>Pedidos</b><br>
   <img src="docs/screenshots/pedidos.png" alt="Detalle de Pedido" width="600" /><br>
 </p>
 
+<p align="center">
+  <b>Mensajes de error</b><br>
+  <img src="docs/screenshots/productos-delete.png" alt="Mensajes de error" width="600" /><br>
+</p>
 
 ## 🌍 Estructura del Proyecto
 
