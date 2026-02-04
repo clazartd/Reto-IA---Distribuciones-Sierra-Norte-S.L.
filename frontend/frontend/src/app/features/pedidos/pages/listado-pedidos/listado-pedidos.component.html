@@ -20,7 +20,7 @@
     </div>
   </form>
   <div class="text-muted mt-1 ms-1" style="font-size:.97em;">
-    Mostrando {{ pedidosFiltrados?.length || 0 }} de {{ pedidos?.length || 0 }} pedidos
+    Mostrando {{ pedidosFiltrados.length || 0 }} de {{ pedidos.length || 0 }} pedidos
   </div>
 </div>
 
@@ -51,7 +51,7 @@
             <!-- Aquí podrían ir acciones si aplica -->
           </tr>
         </thead>
-        <tbody *ngIf="pedidosFiltrados?.length; else sinPedidos">
+        <tbody *ngIf="pedidosFiltrados.length">
           <tr *ngFor="let pedido of pedidosFiltrados">
             <td>{{ pedido.id }}</td>
             <td>{{ pedido.numeroPedido }}</td>

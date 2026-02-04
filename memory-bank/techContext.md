@@ -68,4 +68,13 @@ node src/server.js
 - Los tests deben poder ejecutarse con `npm test` o comando equivalente en backend.
 - Los nuevos cambios críticos en backend deben requerir test antes de pasar a producción.
 
-[... notas frontend ...]
+## Testing frontend
+
+- Todos los módulos críticos (componentes, servicios, guards, pipes, helpers) en Angular deben tener archivo de test unitario asociado: `<nombre>.spec.ts`.
+- Framework: Angular TestBed + Jest o Karma.
+- Cobertura mínima: renderizado de templates, lógica de componentes, eventos, interacciones usuario, lógica reactiva, respuestas a errores y casos límite.
+- Siempre evitar el uso de done(). Los tests deben usar Promises o async/await para indicar la finalización de pruebas asíncronas.
+- Tests de servicios: mocks de dependencias y HTTP; tests de guards: validación de flujos permitidos y bloqueados.
+- Los tests deben cubrir tanto el “happy path” como los errores y estados reactivos.
+- Los tests pueden ejecutarse con `npm test` en directorio frontend.
+- Todo PR/merge relevante debe incluir el test asociado.

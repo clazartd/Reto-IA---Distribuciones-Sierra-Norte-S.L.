@@ -1,0 +1,34 @@
+# Node modules and environment
+/node_modules
+.env
+.env.*
+# Editor/OS/IDE junk
+.DS_Store
+Thumbs.db
+*.log
+*.pid
+*.swp
+*.swo
+.idea/
+.vscode/
+*.code-workspace
+
+# Build output
+dist/
+build/
+coverage/
+out/
+
+# npm/yarn logs/output
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# DB artifacts/temp
+*.sqlite
+*.db
+*.bak
+
+# Test output
+/jest-coverage/
+coverage/

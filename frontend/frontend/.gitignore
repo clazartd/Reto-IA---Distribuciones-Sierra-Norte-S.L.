@@ -6,8 +6,10 @@
 /out-tsc
 /bazel-out
 
-# Node
+# Node modules
 /node_modules
+
+# npm/yarn logs
 npm-debug.log
 yarn-error.log
 
@@ -29,7 +31,7 @@ yarn-error.log
 !.vscode/mcp.json
 .history/*
 
-# Miscellaneous
+# Angular/CLI/Build
 /.angular/cache
 .sass-cache/
 /connect.lock
@@ -38,6 +40,12 @@ yarn-error.log
 testem.log
 /typings
 __screenshots__/
+
+# Environment config (never commit secrets!)
+src/environments/environment.ts
+src/environments/environment.*.ts
+.env
+.env.*
 
 # System files
 .DS_Store
