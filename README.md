@@ -1,7 +1,7 @@
-<h1 align="center">📦 Fullstack Pedidos/Productos/Clientes App 🚀</h1>
+<h1 align="center">📦 Distribuciones Sierra Norte S.L. 🚀</h1>
 
 <p align="center">
-  <b>Angular</b> (Frontend) &nbsp; • &nbsp; <b>Node.js + Express + PostgreSQL</b> (Backend)
+  <b>Mejora de la Gestión de Pedidos y Seguimiento</b>
 </p>
 
 ---
