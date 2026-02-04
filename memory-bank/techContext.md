@@ -58,4 +58,14 @@ node src/server.js
 - Todos los enums clave del dominio, por ejemplo Estado, deben ser únicos, definitivos y sincronizados a nivel de string entre backend y frontend.  
 - Prohibido usar strings “a mano” o variantes visuales ad-hoc.
 
+## Testing backend
+
+- Todos los módulos críticos (services, controllers, modelos, rutas) deben tener test unitarios.
+- Framework recomendado: Jest (alternativamente Mocha + Chai).
+- Coloca los tests en una carpeta `backend/tests/` o usa subcarpetas `__tests__` próximas a cada módulo.
+- Cobertura mínima: flujos de éxito (“happy path”) + validación de errores, edge y corner cases.
+- Testear enrutado principal, servicios (con mocks de DB), modelos de dominio, validación y controladores, asegurando que los errores o validaciones inválidas lanzan el código/objeto esperado.
+- Los tests deben poder ejecutarse con `npm test` o comando equivalente en backend.
+- Los nuevos cambios críticos en backend deben requerir test antes de pasar a producción.
+
 [... notas frontend ...]

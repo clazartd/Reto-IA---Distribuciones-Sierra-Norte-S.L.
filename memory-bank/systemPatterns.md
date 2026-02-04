@@ -19,6 +19,17 @@
   - `config/` → conexión, pool y parámetros de PostgreSQL
 - **NUNCA** lógica en rutas, ni acceso directo a DB fuera de services/models.
 
+### Test y calidad obligatoria
+
+- Todo módulo/función crítica (servicio, controlador, modelo, ruta) debe tener su test unitario asociado.
+- Estructura sugerida: `backend/tests/` o `__tests__` junto a cada módulo fuente.
+- Framework: Jest (preferido), Mocha+Chai opcional.
+- Los tests deben cubrir al menos: casos de éxito (“happy path”), casos de error y de entradas inválidas.
+- Usar mocks/dummies para base de datos y dependencias externas donde aplique.
+- No debe aceptarse ningún refactor/cambio relevante en backend sin su test correspondiente.
+- Ejecutar `npm test` CI antes de merges a producción.
+- Establecer cobertura mínima pactada como equipo (>80% negocio deseable).
+
 ### Flujo obligatorio: login
 
 - **POST /auth/login**  

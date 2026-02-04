@@ -19,6 +19,7 @@
 
 ## Pendiente
 
+- Implementar test unitarios en backend (services, controllers, modelos, rutas API), usando Jest o Mocha, cubriendo flujos correctos (happy path) y validación de errores y edge cases.
 - **Dashboard**:
   - Implementar que todas las cards de resumen de pedidos en dashboard (total pedidos, pendientes, entregados, reparto, cancelados…) consuman datos vivos consultando la API, nunca mocks.
   - Eliminar valores hardcodeados de métricas o estados en home/dashboard.
