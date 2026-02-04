@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Producto } from '../../../../core/models/producto.model';
@@ -29,7 +29,9 @@ export class ListadoProductosComponent {
 
   constructor(
     private productosService: ProductosService,
-    private sessionService: SessionService
+    private sessionService: SessionService,
+    private cd: ChangeDetectorRef
+
   ) {}
 
   ngOnInit() {
@@ -50,7 +52,9 @@ export class ListadoProductosComponent {
   cargarProductos() {
     this.productosService.getProductos().subscribe(prod => {
       this.productos = prod;
+      console.log(prod)
       this.filtrarProductos();
+      this.cd.detectChanges();
     });
   }
 

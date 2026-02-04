@@ -1,83 +1,34 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { Producto } from '../models/producto.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProductosService {
-  private productos: Producto[] = [
-    {
-      id: '1',
-      nombre: 'Cerveza Artesanal',
-      descripcion: 'Pack 6x33cl de IPA artesanal',
-      unidadMedida: 'caja',
-      precioReferencia: '14.99',
-      disponible: true,
-      createdAt: new Date(),
-    },
-    {
-      id: '2',
-      nombre: 'Agua Mineral',
-      descripcion: 'Botella 1.5L',
-      unidadMedida: 'unidad',
-      precioReferencia: '0.70',
-      disponible: true,
-      createdAt: new Date(),
-    },
-    {
-      id: '3',
-      nombre: 'Aceite de Oliva Virgen',
-      descripcion: 'Garrafa 5L extracción en frío',
-      unidadMedida: 'garrafa',
-      precioReferencia: '28.00',
-      disponible: true,
-      createdAt: new Date(),
-    },
-    {
-      id: '4',
-      nombre: 'Jamón Ibérico',
-      descripcion: 'Pieza entera aprox. 7kg',
-      unidadMedida: 'pieza',
-      precioReferencia: '110.50',
-      disponible: false,
-      createdAt: new Date(),
-    },
-    {
-      id: '5',
-      nombre: 'Queso Manchego',
-      descripcion: 'Cuña 500g maduración reserva',
-      unidadMedida: 'pieza',
-      precioReferencia: '9.45',
-      disponible: true,
-      createdAt: new Date(),
-    }
-  ];
+  private apiUrl = `${environment.apiUrl}/productos`;
+
+  constructor(private http: HttpClient) {}
 
   getProductos(): Observable<Producto[]> {
-    return of([...this.productos]);
+    return this.http.get<Producto[]>(this.apiUrl);
   }
 
-  getProductoById(id: string): Observable<Producto | undefined> {
-    return of(this.productos.find(p => p.id === id));
+  getProductoById(id: string): Observable<Producto> {
+    return this.http.get<Producto>(`${this.apiUrl}/${id}`);
   }
 
-  createProducto(producto: Producto): Observable<Producto> {
-    const newProducto: Producto = {
-      ...producto,
-      id: String(Date.now()),
-      createdAt: new Date()
-    };
-    this.productos.push(newProducto);
-    return of(newProducto);
+  createProducto(producto: Partial<Producto>): Observable<Producto> {
+    return this.http.post<Producto>(this.apiUrl, producto);
   }
 
-  updateProducto(id: string, producto: Producto): Observable<Producto | undefined> {
-    const idx = this.productos.findIndex(p => p.id === id);
-    if (idx !== -1) {
-      this.productos[idx] = { ...producto, id, createdAt: this.productos[idx].createdAt };
-      return of(this.productos[idx]);
-    }
-    return of(undefined);
+  updateProducto(id: string, producto: Partial<Producto>): Observable<Producto> {
+    return this.http.put<Producto>(`${this.apiUrl}/${id}`, producto);
+  }
+
+  deleteProducto(id: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`);
   }
 }

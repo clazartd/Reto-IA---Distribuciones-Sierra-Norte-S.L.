@@ -1,8 +1,6 @@
 <div class="pedidos-header d-flex align-items-center justify-content-between mb-4">
   <h1 class="display-5 fw-bold mb-0">Gestión de Pedidos</h1>
-  <button *ngIf="puedeCrearPedido" type="button" class="btn btn-primary d-flex align-items-center px-3" (click)="abrirNuevoPedidoModal()">
-    <span class="fs-5">+</span>&nbsp;Nuevo Pedido
-  </button>
+  <app-agregar-pedido-button></app-agregar-pedido-button>
 </div>
 
 <div class="pedidos-box pedidos-filtros bg-white rounded-4 shadow-sm border p-4 mb-4">

@@ -5,6 +5,7 @@ import { SessionService } from '../../../../core/services/session.service';
 import { User } from '../../../../core/models/user.model';
 import { Role } from '../../../../core/constants/roles.constants';
 import { Pedido, Estado } from '../../../../core/models/pedido.model';
+import { AgregarPedidoButtonComponent } from '../../../../shared/components/agregar-pedido/agregar-pedido-button.component';
 
 @Component({
   selector: 'app-listado-pedidos',
@@ -12,6 +13,7 @@ import { Pedido, Estado } from '../../../../core/models/pedido.model';
   imports: [
     CommonModule,
     FormsModule,
+    AgregarPedidoButtonComponent
   ],
   templateUrl: './listado-pedidos.component.html',
   styleUrls: ['./listado-pedidos.component.scss']

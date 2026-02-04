@@ -1,23 +1,28 @@
-# Active Context
+# activeContext.md
 
-## Foco actual
+## Enfoque actual
 
-- Backend funcional terminado: login y registro de usuarios implementados usando Express 5 + PostgreSQL real.
-- Arquitectura modular completa (routes, controllers, services, models, config), desacoplada y validada.
-- Autenticación y registro sólo a través de API REST, completamente des-mockeada.
-- Inicialización de estructura vía scripts automatizados: `.env` centraliza conexión, `npm run db:init` crea tablas esenciales (usuarios), manual creación de BD si no existe.
-- Toda la lógica de autenticación/roles y persistencia se valida en la capa backend/servicios, no en mock/local ni controladores.
-- El health-check sigue activo en `/api/health` para debugging.
+**Gestión de Productos**
+- El modelo Producto está completamente alineado frontend-backend.
+- Todos los endpoints CRUD y DTO exponen los campos:  
+  - id, nombre, descripcion, unidadMedida, **precioReferencia (number)**, disponible, createdAt
+  - **precioReferencia ahora es tipo number (NUMERIC en BD y number/float en backend y frontend)**
+- Cambios aplicados:
+  - La tabla SQL: campo precio_referencia NUMERIC(10,2)
+  - El modelo backend/ProductoModel: precioReferencia es number, con parsing seguro y sanitización de tipo.
+  - Controlador y servicios: sólo usan y exponen precioReferencia como number (no string).
+  - Script db-init: todos los inserts de ejemplo y migraciones reflejan el campo como número.
+- El frontend TypeScript interface coincide campo a campo incluido el tipo fuerte de precioReferencia.
 
-## Próximos pasos
+**Actualización de patrones**
+- Se mantiene la regla de dominios modulares (routes/controllers/models/services/config) para Product igual al resto del sistema.
+- ProductController y ProductModel siguen la convención DTO ↔ BD sin alias ni transformaciones innecesarias en controladores.
+- Si hubiera productos legacy aún en la BD como string, el modelo parsea correctamente a number, pero la persistencia ya es tipo NUMERIC.
+- Todos los test y componentes frontend esperan y manipulan precioReferencia como number, evitando bugs de conversión en cálculos o inputs.
 
-- Migrar el frontend para eliminar datos/usuarios mockeados en servicios.
-- Conectar servicios Angular (`auth.service.ts`, etc.) a API backend REST real (`/auth/login`, `/auth/register`).
-- Validar login, registro y protección de rutas contra API productiva, asegurando feedback claro y seguro.
-- Asegurar migración suave: default a API, fallback opcional (en dev) si backend está caído.
-- Dejar toda la autenticación y permisos centralizada sólo en backend.
+**Decisiones activas**
+- La validación y el DTO son ahora fuente de verdad: cada vez que cambie la interface del frontend, hay que reflejarlo idénticamente en BD y modelo backend.
+- Este upgrade sienta la base del patrón para todas las futuras entidades con campos numéricos relevantes.
 
-## Decisión clave
-
-- El frontend debe depender 100% del backend para autenticación/usuarios (sin datos harcodeados ni mocks).
-- La robustez modular y la validación centralizada sientan base para seguridad y mantenibilidad extendida.
+### Siguientes pasos
+- Monitorizar nuevos features o migrations que dependan de precioReferencia, para garantizar que el tipo number/NUMERIC nunca se degrade por migraciones/parches laterales.

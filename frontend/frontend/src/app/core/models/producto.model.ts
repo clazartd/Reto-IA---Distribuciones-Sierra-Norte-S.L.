@@ -3,7 +3,7 @@ export interface Producto {
   nombre: string;
   descripcion: string | null;
   unidadMedida: string;
-  precioReferencia: string | null;
+  precioReferencia: number;
   disponible: boolean;
   createdAt: Date;
 }

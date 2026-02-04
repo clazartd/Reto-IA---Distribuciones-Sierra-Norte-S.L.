@@ -12,4 +12,19 @@ export class AgregarPedidoButtonComponent {
   @Input() text: string = 'Agregar nuevo pedido';
   @Input() btnClass: string = 'btn btn-success';
   @Output() agregarPedido = new EventEmitter<void>();
+
+  mostrarModal = false;
+
+  abrirModal() {
+    this.mostrarModal = true;
+  }
+
+  cerrarModal() {
+    this.mostrarModal = false;
+  }
+
+  confirmarAgregarPedido() {
+    this.agregarPedido.emit();
+    this.cerrarModal();
+  }
 }

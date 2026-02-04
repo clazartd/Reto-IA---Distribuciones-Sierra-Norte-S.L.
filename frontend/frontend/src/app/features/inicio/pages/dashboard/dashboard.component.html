@@ -66,9 +66,7 @@
       <h6 class="card-title mb-2">Acciones Rápidas</h6>
       <div class="text-muted mb-3">Accede a las funciones principales del sistema</div>
       <div class="row g-3">
-        <div class="col-12 col-md-3 d-flex">
-          <button class="btn btn-primary flex-fill" (click)="abrirNuevoPedidoModal()">Nuevo Pedido</button>
-        </div>
+        
         <div class="col-12 col-md-3 d-flex">
           <a class="btn btn-outline-secondary flex-fill" routerLink="/pedidos/listado">Ver Pedidos</a>
         </div>
@@ -113,6 +111,3 @@
     </div>
   </div>
 </section>
-
-<!-- MODAL NUEVO PEDIDO -->
-<app-nuevo-pedido #nuevoPedidoModal (closed)="nuevoPedidoModalClosed()"></app-nuevo-pedido>

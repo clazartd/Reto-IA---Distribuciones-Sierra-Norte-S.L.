@@ -1,3 +1,26 @@
-<button [ngClass]="btnClass" type="button" (click)="agregarPedido.emit()">
+<button [ngClass]="btnClass" (click)="abrirModal()">
   {{ text }}
 </button>
+
+@if (mostrarModal) {
+  <div class="modal-backdrop fade show"></div>
+  <div class="modal fade show d-block" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <h5 class="modal-title">Nuevo Pedido</h5>
+          <button type="button" class="btn-close" aria-label="Cerrar" (click)="cerrarModal()"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Aquí puedes insertar el formulario real de pedido -->
+          <p>Aquí irá el formulario de nuevo pedido.</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" (click)="cerrarModal()">Cancelar</button>
+          <button class="btn btn-primary" (click)="confirmarAgregarPedido()">Crear pedido</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

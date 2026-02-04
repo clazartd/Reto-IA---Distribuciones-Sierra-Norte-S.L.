@@ -4,9 +4,7 @@ import { RouterModule } from '@angular/router';
 import { SessionService } from '../../../../core/services/session.service';
 import { PedidosService } from '../../../../core/services/pedidos.service';
 import { Role } from '../../../../core/constants/roles.constants';
-import { AgregarPedidoButtonComponent } from '../../../../shared/components/agregar-pedido/agregar-pedido-button.component';
-import { NuevoPedidoComponent } from '../../../pedidos/pages/nuevo-pedido/nuevo-pedido.component';
-import { Pedido, Estado } from '../../../../core/models/pedido.model';
+import { Estado } from '../../../../core/models/pedido.model';
 
 interface UsuarioDashboard {
   nombre: string;
@@ -21,8 +19,6 @@ interface UsuarioDashboard {
   imports: [
     CommonModule,
     RouterModule,
-    AgregarPedidoButtonComponent,
-    NuevoPedidoComponent
   ],
 })
 export class DashboardComponent implements OnInit {
@@ -35,8 +31,6 @@ export class DashboardComponent implements OnInit {
     cancelados: 0
   };
   loading = true;
-
-  @ViewChild('nuevoPedidoModal') nuevoPedidoModal!: NuevoPedidoComponent;
 
   get esComercial(): boolean { return this.usuario.rol === Role.COMERCIAL; }
   get esAlmacen(): boolean { return this.usuario.rol === Role.ALMACEN; }
@@ -75,10 +69,6 @@ export class DashboardComponent implements OnInit {
         this.loading = false;
       }
     });
-  }
-
-  abrirNuevoPedidoModal(): void {
-    this.nuevoPedidoModal.open();
   }
 
   nuevoPedidoModalClosed(): void {}

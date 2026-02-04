@@ -5,7 +5,6 @@ import { ClientesRoutingModule } from './clientes-routing.module';
 
 import { ListadoClientesComponent } from './pages/listado-clientes/listado-clientes.component';
 import { NuevoClienteComponent } from './pages/nuevo-cliente/nuevo-cliente.component';
-import { EditarClienteComponent } from './pages/editar-cliente/editar-cliente.component';
 
 @NgModule({
   imports: [
@@ -16,7 +15,6 @@ import { EditarClienteComponent } from './pages/editar-cliente/editar-cliente.co
     RouterLinkActive,
     ListadoClientesComponent,
     NuevoClienteComponent,
-    EditarClienteComponent
   ],
 })
 export class ClientesModule {}
