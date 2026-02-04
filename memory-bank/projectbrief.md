@@ -1,13 +1,14 @@
 # Project Brief
 
 ## Purpose
-Digitalizar, centralizar y optimizar la gestión de pedidos y clientes en Distribuciones Sierra Norte S.L., eliminando trabajos manuales y ofreciendo trazabilidad, eficiencia y acceso controlado.
+Digitalizar, centralizar y optimizar la gestión de pedidos, clientes y productos en Distribuciones Sierra Norte S.L., eliminando trabajos manuales y ofreciendo trazabilidad, eficiencia, acceso controlado y métricas en tiempo real.
 
 ## Goals
 - Acceso seguro a paneles y listados según reglas de negocio y rol.
 - Gestión unificada de pedidos (registro, consulta, edición, distribución, supervisión).
 - **Gestión de Clientes:** listado, alta, edición y consulta de información de clientes, integración con módulo de pedidos.
 - Permisos personalizados por rol sobre gestión de clientes: comercial/administración/dirección (edición), almacén/reparto (solo lectura).
+- **Reporting tablero:** Todas las métricas resumen (cards/dashboard) se mostrarán siempre como datos vivos consultando la API en tiempo real (ej: total pedidos, pendientes, entregados, urgentes...), nunca mocks ni derivados locales.
 - Experiencia visual clara y sencilla para usuarios no técnicos.
 - Separación estricta de lógica, presentación y acceso.
 
@@ -27,6 +28,7 @@ Incluye:
 - Pedido: todo su ciclo, con filtros y dashboards de seguimiento.
 - Cliente: listado completo, alta, edición, consulta detalle, acceso e integración con pedidos.
 - Producto: catálogo, alta/edición/eliminación simple, selección desde pedidos, integración total con pedidos.
+- **Dashboard/reporting**: visualización y métricas siempre en vivo vía API.
 - Control de roles/autenticación (mocked; sin backend real inicial).
 - Layout visual basado en SaaS moderno (sidebar global, navbar, feedback de acceso).
 - Arquitectura modular Angular, todos los módulos funcionales lazy-loaded.

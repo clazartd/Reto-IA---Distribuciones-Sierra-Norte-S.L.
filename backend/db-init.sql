@@ -57,3 +57,59 @@ INSERT INTO productos (nombre, descripcion, unidad_medida, precio_referencia, di
   ('Mermelada de fresa', 'Tarro 350gr, 50% fruta', 'ud', 1.65, TRUE, CURRENT_TIMESTAMP),
   ('Cereal desayuno avena', 'Caja 500gr copos de avena integral', 'kg', 4.30, TRUE, CURRENT_TIMESTAMP)
 ;
+
+-- Tabla pedidos alineada a frontend
+DROP TABLE IF EXISTS pedidos;
+CREATE TABLE IF NOT EXISTS pedidos (
+  id SERIAL PRIMARY KEY,
+  numero_pedido VARCHAR(32) NOT NULL,
+  cliente_id UUID NOT NULL REFERENCES clientes(id),
+  productos JSONB NOT NULL, -- array de ProductoBasico
+  fecha_solicitud DATE NOT NULL,
+  fecha_prevista_entrega DATE NOT NULL,
+  estado VARCHAR(20) NOT NULL CHECK (estado IN ('REGISTRADO','PREPARACION','REPARTO','ENTREGADO','CANCELADO')),
+  urgente BOOLEAN NOT NULL DEFAULT FALSE,
+  motivo_cancelacion TEXT,
+  total NUMERIC(12,2) NOT NULL,
+  createdAt TIMESTAMP DEFAULT NOW()
+);
+
+-- 3 pedidos de ejemplo (productos = ProductoBasico[])
+INSERT INTO pedidos (numero_pedido, cliente_id, productos, fecha_solicitud, fecha_prevista_entrega, estado, urgente, motivo_cancelacion, total, createdAt) VALUES
+  (
+    'PED-0001',
+    (SELECT id FROM clientes LIMIT 1),
+    '[{"idProducto":"1","cantidad":3},{"idProducto":"2","cantidad":5}]',
+    '2026-02-04',
+    '2026-02-05',
+    'REGISTRADO',
+    FALSE,
+    NULL,
+    34.12,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'PED-0002',
+    (SELECT id FROM clientes OFFSET 1 LIMIT 1),
+    '[{"idProducto":"3","cantidad":6}]',
+    '2026-02-03',
+    '2026-02-04',
+    'PREPARACION',
+    TRUE,
+    NULL,
+    25.74,
+    CURRENT_TIMESTAMP
+  ),
+  (
+    'PED-0003',
+    (SELECT id FROM clientes OFFSET 2 LIMIT 1),
+    '[{"idProducto":"4","cantidad":2}]',
+    '2026-01-31',
+    '2026-02-01',
+    'CANCELADO',
+    FALSE,
+    'Cliente solicitó anulación',
+    5.78,
+    CURRENT_TIMESTAMP
+  )
+;

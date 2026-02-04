@@ -5,6 +5,7 @@ const cors = require('cors');
 const authRouter = require('./src/routes/auth.routes.js');
 const clientesRouter = require('./src/routes/clientes.routes.js');
 const productosRouter = require('./src/routes/productos.routes.js');
+const pedidosRouter = require('./src/routes/pedidos.routes.js');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
@@ -15,6 +16,7 @@ app.use(express.json());
 app.use('/auth', authRouter);
 app.use('/clientes', clientesRouter);
 app.use('/productos', productosRouter);
+app.use('/pedidos', pedidosRouter);
 
 app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'ok', ts: Date.now() });

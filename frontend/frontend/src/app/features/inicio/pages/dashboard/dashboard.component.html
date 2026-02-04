@@ -1,13 +1,13 @@
 <section>
   <h2 class="fw-bold">Panel de Control</h2>
   <div class="text-muted mb-4">
-    Bienvenido, {{ usuario.nombre }}. Resumen de la actividad del sistema.
+    Bienvenido, {{ usuario?.nombre || usuario?.username || '' }}. Resumen de la actividad del sistema.
   </div>
 </section>
 
 <!-- CARDS DE RESUMEN -->
 <section class="row g-3 mb-4">
-  <div class="col-12 col-sm-6 col-lg-3">
+  <div class="col-12 col-sm-6 col-lg-4">
     <div class="summary-card card h-100">
       <div class="card-body">
         <h6 class="card-title">Total Pedidos</h6>
@@ -16,7 +16,7 @@
       </div>
     </div>
   </div>
-  <div class="col-12 col-sm-6 col-lg-3">
+  <div class="col-12 col-sm-6 col-lg-4">
     <div class="summary-card card h-100">
       <div class="card-body">
         <h6 class="card-title">Pedidos Pendientes</h6>
@@ -25,21 +25,12 @@
       </div>
     </div>
   </div>
-  <div class="col-12 col-sm-6 col-lg-3">
+  <div class="col-12 col-sm-6 col-lg-4">
     <div class="summary-card card h-100">
       <div class="card-body">
         <h6 class="card-title">Entregas Hoy</h6>
         <div class="display-5">{{ resumen.entregados }}</div>
         <small class="text-muted">Programadas</small>
-      </div>
-    </div>
-  </div>
-  <div class="col-12 col-sm-6 col-lg-3">
-    <div class="summary-card card h-100">
-      <div class="card-body">
-        <h6 class="card-title">Incidencias Abiertas</h6>
-        <div class="display-5">0</div>
-        <small class="text-muted">Requieren atención</small>
       </div>
     </div>
   </div>
@@ -53,8 +44,55 @@
       <div class="text-muted mb-2">
         Vista general del estado actual de todos los pedidos
       </div>
-      <!-- Aquí podría ir una gráfica o tabla de distribución -->
-      <div class="text-center text-muted py-3">No hay datos disponibles</div>
+      <div *ngIf="!isLoadingEstados && distribucionPorEstado && totalEstadosPedidos > 0; else estadoVacio">
+        <table class="table table-borderless align-middle mb-0">
+          <tbody>
+            <tr *ngFor="let estado of estadosPedidos">
+              <td style="white-space:nowrap; width:120px;">
+                <span class="fw-semibold"
+                  [ngClass]="{
+                    'text-secondary': estado === 'REGISTRADO',
+                    'text-warning': estado === 'PREPARACION',
+                    'text-primary': estado === 'REPARTO',
+                    'text-success': estado === 'ENTREGADO',
+                    'text-danger': estado === 'CANCELADO'
+                  }">{{
+                    estado === 'REGISTRADO' ? 'Registrado'
+                    : estado === 'PREPARACION' ? 'Preparación'
+                    : estado === 'REPARTO' ? 'Reparto'
+                    : estado === 'ENTREGADO' ? 'Entregado'
+                    : estado === 'CANCELADO' ? 'Cancelado'
+                    : estado
+                  }}</span>
+              </td>
+              <td style="width:60px;" class="text-end fw-semibold">
+                {{ distribucionPorEstado[estado] || 0 }}
+              </td>
+              <td style="width:75%">
+                <div class="progress" style="height:10px;">
+                  <div
+                    class="progress-bar"
+                    [ngClass]="{
+                      'bg-secondary': estado === 'REGISTRADO',
+                      'bg-warning': estado === 'PREPARACION',
+                      'bg-primary': estado === 'REPARTO',
+                      'bg-success': estado === 'ENTREGADO',
+                      'bg-danger': estado === 'CANCELADO'
+                    }"
+                    [style.width.%]="getPorcentajeEstado(estado)">
+                  </div>
+                </div>
+              </td>
+              <td style="width:50px;" class="text-end">
+                <span class="text-muted small">{{ getPorcentajeEstado(estado) | number:'1.0-0' }}%</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <ng-template #estadoVacio>
+        <div class="text-center text-muted py-3">No hay pedidos registrados</div>
+      </ng-template>
     </div>
   </div>
 </section>
@@ -72,9 +110,6 @@
         </div>
         <div class="col-12 col-md-3 d-flex">
           <a class="btn btn-outline-secondary flex-fill" routerLink="/clientes">Gestionar Clientes</a>
-        </div>
-        <div class="col-12 col-md-3 d-flex">
-          <a class="btn btn-outline-secondary flex-fill" routerLink="/rutas">Planificar Rutas</a>
         </div>
       </div>
     </div>
@@ -96,12 +131,6 @@
     <div class="card-body">
       <h6>Reparto</h6>
       <p class="mb-0 text-muted">Accede a la lista de entregas asignadas y confirma las entregas realizadas.</p>
-    </div>
-  </div>
-  <div *ngIf="esAdmin" class="card mt-3">
-    <div class="card-body">
-      <h6>Administración</h6>
-      <p class="mb-0 text-muted">Puede consultar todo el histórico de pedidos y gestionar incidencias.</p>
     </div>
   </div>
   <div *ngIf="esDireccion" class="card mt-3">

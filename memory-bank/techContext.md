@@ -27,6 +27,13 @@ node src/server.js
   - password: varchar (hash o plano según seguridad/prototipo)
   - role: varchar (de lista controlada: DIRECCION, COMERCIAL, ALMACEN, REPARTO, ADMINISTRACION)
 
+### Dashboard & métricas vivas
+
+- Todas las cards de métricas/resumen (dashboard) en frontend deben obtener sus datos de endpoints backend dedicados para métricas (ejemplo: `/api/pedidos/metrics`), nunca usando mocks ni derived state en el frontend.
+- El backend debe exponer agregados óptimos: totalPedidos, pendientes, entregados, reparto, cancelados, urgentes, etc., como parte de la respuesta.
+- Nunca persistir valores de agregado, siempre calcularlos en query SQL adecuada.
+- El frontend debe consumir y refrescar estos valores usando Observables u otro patrón reactivo.
+
 ### Detalles de conexión/resiliencia
 
 - Usar algún pool para PostgreSQL; las conexiones deben ser recicladas (Pool de pg/promesas).
@@ -45,5 +52,10 @@ node src/server.js
 - Body: `{ username: "...", password: "..." }`
 - Si OK: retorna `{ user: { id, username, role } }`
 - Si falla: `{ user: null, message: "Usuario o contraseña incorrectos" }`
+
+### Principio de enums sincronizados
+
+- Todos los enums clave del dominio, por ejemplo Estado, deben ser únicos, definitivos y sincronizados a nivel de string entre backend y frontend.  
+- Prohibido usar strings “a mano” o variantes visuales ad-hoc.
 
 [... notas frontend ...]

@@ -1,19 +1,21 @@
-import { Producto } from './producto.model';
-
-// Enum fuerte y reutilizable para los estados de pedido
 export enum Estado {
-  REGISTRADO = 'registrado',
-  PREPARACION = 'en preparación',
-  REPARTO = 'en reparto',
-  ENTREGADO = 'entregado',
-  CANCELADO = 'cancelado'
+  REGISTRADO = 'REGISTRADO',
+  PREPARACION = 'PREPARACION',
+  REPARTO = 'REPARTO',
+  ENTREGADO = 'ENTREGADO',
+  CANCELADO = 'CANCELADO'
+}
+
+export interface ProductoBasico {
+  idProducto: string;
+  cantidad: number;
 }
 
 export interface Pedido {
-  id: number;
+  id: string;
   numeroPedido: string;
   clienteId: string;
-  productos: Producto[];
+  productos: ProductoBasico[];
   fechaSolicitud: Date;
   fechaPrevistaEntrega: Date;
   estado: Estado;

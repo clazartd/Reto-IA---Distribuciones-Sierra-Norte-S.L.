@@ -1,0 +1,28 @@
+html, body {
+  min-height: 100vh;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.dashboard-root {
+  min-height: 100vh;
+  height: 100%;
+  display: flex;
+}
+
+.sidebar {
+  min-height: 100vh;
+  height: 100%;
+  /* Asegura que llegue siempre hasta el fondo visible aunque main crezca */
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 2rem;
+}
+
+/* Puedes añadir un fondo, border o scrollbar personalizado aquí si quieres */

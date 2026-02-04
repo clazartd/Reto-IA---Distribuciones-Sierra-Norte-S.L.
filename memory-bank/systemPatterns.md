@@ -2,7 +2,11 @@
 
 ## Dominio y Modelos Compartidos
 
-[...patrones de frontend pedidos...]
+- Todos los enums de referencia (p. ej., Estado en pedidos) están estrictamente normalizados (mayúsculas, sin espacios o acentos, igual en frontend y backend). Cualquier adición/cambio se propaga de forma obligatoria por ambos lados.
+- Las relaciones entre entidades (p. ej., Pedido-Cliente) en frontend se resuelven mediante llamada API en paralelo + Map de lookup (id → label), con acceso reactivo en templates (`getClienteNombre`). No depender nunca de copias, datos legacy ni referencias hardcodeadas.
+- Los listados siguen un patrón visual y de experiencia unificado: cajas visuales (`box`), tablas responsivas, badges de estado, columnas homogéneas y filtros visuales arriba.
+- El dashboard (pantalla inicio) debe consumir SIEMPRE datos vivos desde API. No se permite el uso de valores hardcodeados/estáticos para cards de resumen (ej: total pedidos, pendientes, entregados, urgentes...). Esta lógica es replicable a cualquier vista resumen.
+- Toda lógica de métricas backend debe exponer directamente y de forma óptima los aggregados requeridos por dashboards (ej: endpoints tipo `/api/pedidos/metrics`).
 
 ## Backend (Express + Node.js, API RESTful, PostgreSQL)
 
@@ -27,15 +31,10 @@
   - Si NO: `{ user: null, message: 'Usuario o contraseña incorrectos' }`
 - El service encapsula la lógica, controller sólo orquesta.
 
-### Modelo usuario (DB)
+### Relaciones y entidades
 
-Tabla `usuarios` (PostgreSQL):
-
-| id (varchar, PK) | username (varchar) | password (varchar, seguro) | role (varchar, valores válidos) |
-|---|---|---|---|
-| ... | ... | ... | DIRECCION/COMERCIAL/ALMACEN/REPARTO/ADMINISTRACION |
-
-- Roles estrictamente los definidos en análisis funcional; sin ampliaciones.
+- Para toda relación N:1 (ej. pedido-cliente), el id va siempre en la entidad detalle (Pedido), nunca duplicar datos.
+- Visualización de atributos “lookup” siempre vía API + Map, nunca guardando textos redundantes en la entidad principal.
 
 ### Validación (protocolo obligado)
 
@@ -69,3 +68,4 @@ backend/src/
 
 - El health-check sigue activo (`/api/health`) para debugging y CI.
 - Toda futura entidad/domino debe seguir este patrón.
+- El patrón metricsApi/dashboard será obligatorio también para futuras necesidades administrativas: nunca consumo de mocks en datos de negocio.

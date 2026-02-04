@@ -1,116 +1,115 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { SessionService } from '../../../../core/services/session.service';
-import { User } from '../../../../core/models/user.model';
-import { Role } from '../../../../core/constants/roles.constants';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Pedido, Estado } from '../../../../core/models/pedido.model';
+import { PedidosService } from '../../../../core/services/pedidos.service';
+import { ClientesService } from '../../../../core/services/clientes.service';
+import { Cliente } from '../../../../core/models/cliente.model';
 import { AgregarPedidoButtonComponent } from '../../../../shared/components/agregar-pedido/agregar-pedido-button.component';
+import { DecimalPipe, CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-listado-pedidos',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    AgregarPedidoButtonComponent
-  ],
+  imports: [AgregarPedidoButtonComponent, DecimalPipe, FormsModule, CommonModule],
   templateUrl: './listado-pedidos.component.html',
-  styleUrls: ['./listado-pedidos.component.scss']
+  styleUrls: ['./listado-pedidos.component.scss'],
 })
-export class ListadoPedidosComponent {
-  user: User | null = null;
-
-  filtroEstado: Estado | '' = '';
-  filtroFecha: string = '';
-
-  pedidos: Pedido[] = [
-    {
-      id: 1,
-      numeroPedido: 'N-202601-0001',
-      clienteId: 'C-01',
-      productos: [],
-      fechaSolicitud: new Date('2026-02-10'),
-      fechaPrevistaEntrega: new Date('2026-02-12'),
-      estado: Estado.REGISTRADO,
-      urgente: false,
-      total: 32.5
-    },
-    {
-      id: 2,
-      numeroPedido: 'N-202601-0002',
-      clienteId: 'C-02',
-      productos: [],
-      fechaSolicitud: new Date('2026-02-11'),
-      fechaPrevistaEntrega: new Date('2026-02-14'),
-      estado: Estado.PREPARACION,
-      urgente: true,
-      total: 19
-    },
-    {
-      id: 3,
-      numeroPedido: 'N-202601-0003',
-      clienteId: 'C-03',
-      productos: [],
-      fechaSolicitud: new Date('2026-02-09'),
-      fechaPrevistaEntrega: new Date('2026-02-19'),
-      estado: Estado.CANCELADO,
-      urgente: false,
-      motivoCancelacion: 'Cliente lo solicitó',
-      total: 0
-    }
-  ];
-
-  filteredPedidos: Pedido[] = [];
+export class ListadoPedidosComponent implements OnInit {
+  pedidos: Pedido[] = [];
+  pedidosFiltrados: Pedido[] = [];
+  busqueda: string = '';
+  filtroEstado: string = '';
   loading = false;
-  error = '';
-  showCancelConfirm = false;
-  selectedPedidoToEdit: Pedido | null = null;
-  selectedPedidoToCancel: Pedido | null = null;
+  error: string | null = null;
 
-  constructor(private sessionService: SessionService) {}
+  clientes: Cliente[] = [];
+  clientesMap: Map<string, string> = new Map();
+
+  constructor(
+    private pedidosService: PedidosService,
+    private clientesService: ClientesService,
+    private cd: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
-    this.user = this.sessionService.getSession();
-    this.filtrar();
+    this.cargarDatos();
   }
 
-  get puedeCrearPedido(): boolean {
-    return !!this.user && [
-      Role.DIRECCION,
-      Role.COMERCIAL,
-      Role.ADMINISTRACION
-    ].includes(this.user.role);
+  cargarDatos() {
+    this.loading = true;
+    this.error = null;
+
+    // Cargar clientes y luego pedidos.
+    this.clientesService.getClientes().subscribe({
+      next: (clientes: Cliente[]) => {
+        this.clientes = clientes;
+        this.clientesMap = new Map(clientes.map(c => [c.id, c.nombre]));
+        this.cargarPedidos();
+      },
+      error: () => {
+        this.clientes = [];
+        this.clientesMap = new Map();
+        this.error = 'Error al cargar clientes.';
+        this.loading = false;
+      }
+    });
   }
 
-  get puedeEditarPedido(): boolean {
-    return !!this.user && [
-      Role.DIRECCION,
-      Role.COMERCIAL,
-      Role.ADMINISTRACION
-    ].includes(this.user.role);
+  cargarPedidos() {
+    this.pedidosService.getPedidos().subscribe({
+      next: (res: Pedido[]) => {
+        this.pedidos = res;
+        this.filtrarPedidos();
+        this.loading = false;
+        this.cd.detectChanges();
+      },
+      error: (err: any) => {
+        this.pedidos = [];
+        this.pedidosFiltrados = [];
+        this.loading = false;
+        this.error = 'Error al cargar pedidos.';
+      },
+    });
   }
 
-  filtrar() {
-    this.filteredPedidos = this.pedidos.filter(p =>
-      (this.filtroEstado === '' || p.estado === this.filtroEstado) &&
-      (this.filtroFecha === '' || this.formatFecha(p.fechaPrevistaEntrega) === this.filtroFecha)
-    );
+  filtrarPedidos() {
+    let buscado = this.busqueda.trim().toLowerCase();
+    this.pedidosFiltrados = this.pedidos.filter(p => {
+      const nombreCliente = this.getClienteNombre(p.clienteId)?.toLowerCase() || '';
+      const coincideBusqueda =
+        !buscado ||
+        (p.numeroPedido?.toString().toLowerCase().includes(buscado)) ||
+        (p.clienteId?.toLowerCase().includes(buscado)) ||
+        (nombreCliente.includes(buscado));
+      const coincideEstado =
+        !this.filtroEstado || (p.estado === this.filtroEstado);
+      return coincideBusqueda && coincideEstado;
+    });
   }
 
-  private formatFecha(fecha: Date): string {
-    return fecha.toISOString().split('T')[0];
+  onBusquedaChange() {
+    this.filtrarPedidos();
+  }
+  onFiltroEstadoChange() {
+    this.filtrarPedidos();
   }
 
-  abrirNuevoPedidoModal() {}
-  abrirEditarPedidoModal(pedido: Pedido) { this.selectedPedidoToEdit = pedido; }
-  abrirCancelarPedidoConfirm(pedido: Pedido) { this.selectedPedidoToCancel = pedido; this.showCancelConfirm = true; }
-  confirmarCancelarPedido() { this.showCancelConfirm = false; }
-  cancelarCancelarPedido() { this.selectedPedidoToCancel = null; this.showCancelConfirm = false; }
-  nuevoPedidoModalClosed() {}
-  onPedidoEdit(pedido: Pedido) { this.selectedPedidoToEdit = null; }
+  getClienteNombre(clienteId: string): string {
+    return this.clientesMap.get(clienteId) || '';
+  }
 
-  get EstadoKeys(): string[] {
-    return Object.values(Estado);
+  getEstadoColor(estado: Estado): string {
+    switch (estado) {
+      case Estado.ENTREGADO:
+        return 'success';
+      case Estado.REPARTO:
+        return 'primary';
+      case Estado.CANCELADO:
+        return 'danger';
+      case Estado.PREPARACION:
+        return 'warning';
+      default:
+        return 'secondary';
+    }
   }
 }
